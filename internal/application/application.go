@@ -15,6 +15,4 @@ func (a *Application) Run() {
 	// The program
 	log.Println("the program is working")
 	// The program end
-
-	// Returning without error
 }
