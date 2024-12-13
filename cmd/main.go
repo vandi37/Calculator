@@ -1,6 +1,6 @@
 package main
 
-import "github.com/VandiKond/Calculator/internal/application"
+import "github.com/vandi37/Calculator/internal/application"
 
 func main() {
 	app := application.New()

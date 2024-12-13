@@ -5,7 +5,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/VandiKond/vanerrors"
+	"github.com/vandi37/vanerrors"
 )
 
 // Error names

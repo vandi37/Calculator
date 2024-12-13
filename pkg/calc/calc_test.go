@@ -3,7 +3,7 @@ package calc_test
 import (
 	"testing"
 
-	"github.com/VandiKond/Calculator/pkg/calc"
+	"github.com/vandi37/Calculator/pkg/calc"
 )
 
 func TestCalc(t *testing.T) {
