@@ -21,7 +21,7 @@ const (
 	ErrorBracketShouldBeOpened    = "bracket should be opened"
 )
 
-var errorW = vanerrors.NewW(vanerrors.Options{ShowMessage: true, ShowCause: true}, vanerrors.EmptyLoggerOptions, vanerrors.EmptyHandler)
+var errorW = vanerrors.NewW(vanerrors.Options{ShowMessage: true, ShowCause: true, ShowAsJson: true}, vanerrors.EmptyLoggerOptions, vanerrors.EmptyHandler)
 
 // All allowed operations
 var operators = []string{"*", "+", "/", "-"}

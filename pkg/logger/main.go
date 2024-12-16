@@ -58,7 +58,7 @@ func (l *Logger) Printf(format string, a ...any) {
 
 // Prints a fatal line and exit
 func (l *Logger) Fatalln(a ...any) {
-	l.writeln(3, a)
+	l.writeln(1, a)
 	stack := vanstack.NewStack()
 	stack.Fill("", 20)
 	fmt.Fprintln(os.Stderr, stack)
@@ -67,7 +67,7 @@ func (l *Logger) Fatalln(a ...any) {
 
 // Prints a fatal formatted line and exit
 func (l *Logger) Fatalf(format string, a ...any) {
-	l.writef(4, format, a)
+	l.writef(1, format, a)
 	stack := vanstack.NewStack()
 	stack.Fill("", 20)
 	fmt.Fprintln(os.Stderr, stack)

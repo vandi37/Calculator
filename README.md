@@ -92,7 +92,7 @@ You will get different error messages using [vanerrors](https://pkg.go.dev/githu
 
 (Switching by status)
 
-- 200
+- 200 (OK)
 
     ```shell
     curl --request POST \
@@ -101,7 +101,7 @@ You will get different error messages using [vanerrors](https://pkg.go.dev/githu
 	--data '{"expression":"1+1"}'
     ```
 
-- 400 
+- 400 (Bad request)
 
     ```shell
     curl --request POST \
@@ -110,7 +110,7 @@ You will get different error messages using [vanerrors](https://pkg.go.dev/githu
     --data "bebebe"
     ```
 
-- 405 
+- 405 (Method not allowed)
 
     ```shell
     curl --request GET \
@@ -119,7 +119,7 @@ You will get different error messages using [vanerrors](https://pkg.go.dev/githu
 	--data '{"expression":"1+1"}'
     ```
 
-- 422
+- 422 (Unprocessable Entity)
 
     ```shell
     curl --request POST \
@@ -130,6 +130,7 @@ You will get different error messages using [vanerrors](https://pkg.go.dev/githu
 
     (or other invalid expressions)
 
+To see more examples view [tests](internal\http\handler\handler_test.go)
 
 ## License 
 
