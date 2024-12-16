@@ -38,6 +38,9 @@ func (a *Application) Run() {
 	server := server.New(handler, config.Port)
 
 	// Running server
-	server.Run()
+	err = server.Run()
+	if err != nil {
+		logger.Fatalln(err)
+	}
 	// The program end
 }
