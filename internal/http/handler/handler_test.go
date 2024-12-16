@@ -1,3 +1,5 @@
+// Combine it into one big test
+
 package handler_test
 
 import (
@@ -78,7 +80,7 @@ func TestCalcError(t *testing.T) {
 			req := httptest.NewRequest(http.MethodPost, "/", bytes.NewBuffer([]byte(testCase)))
 			resp := httptest.NewRecorder()
 			handler.ServeHTTP(resp, req)
-			if resp.Code != 422 {
+			if resp.Code != http.StatusUnprocessableEntity {
 				t.Errorf("Wrong status code, expected 422, got: %d", resp.Code)
 			}
 		})
