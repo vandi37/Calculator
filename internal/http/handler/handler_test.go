@@ -1,3 +1,5 @@
+// Combine it into one big test
+
 package handler_test
 
 import (

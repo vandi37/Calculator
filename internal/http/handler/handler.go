@@ -52,46 +52,32 @@ func NewHandler(path string, logger *logger.Logger) *Handler {
 
 // Serves http
 func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	defer r.Body.Close()
+
 	if h.path != r.URL.Path {
 		w.WriteHeader(http.StatusNotFound)
-		err := SendJson(w, ResponseError{NotFound})
-		if err != nil {
-			h.logger.Fatalln(err)
-		}
+		SendJson(w, ResponseError{NotFound})
 		return
 	}
 	if r.Method != http.MethodPost {
 		w.WriteHeader(http.StatusMethodNotAllowed)
-		err := SendJson(w, ResponseError{MethodNotAllowed})
-		if err != nil {
-			h.logger.Fatalln(err)
-		}
-		return
+		SendJson(w, ResponseError{MethodNotAllowed})
 	}
 	var req Request
 	err := json.NewDecoder(r.Body).Decode(&req)
 	if err != nil || req.Expression == "" {
 		w.WriteHeader(http.StatusBadRequest)
-		err := SendJson(w, ResponseError{InvalidBody})
-		if err != nil {
-			h.logger.Fatalln(err)
-		}
+		SendJson(w, ResponseError{InvalidBody})
 		return
 	}
 
 	res, err := calc.Calc(req.Expression)
 	if err != nil {
 		w.WriteHeader(422)
-		err := SendJson(w, ResponseError{err.Error()})
-		if err != nil {
-			h.logger.Fatalln(err)
-		}
+		SendJson(w, ResponseError{err.Error()})
 		return
 	}
 	h.logger.Printf("expression %s resulted to %.4f", req.Expression, res)
 
-	err = SendJson(w, ResponseOK{res})
-	if err != nil {
-		h.logger.Fatalln(err)
-	}
+	SendJson(w, ResponseOK{res})
 }
