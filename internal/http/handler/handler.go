@@ -2,6 +2,7 @@ package handler
 
 import (
 	"encoding/json"
+	"io"
 	"net/http"
 
 	"github.com/vandi37/Calculator/pkg/calc"
@@ -9,8 +10,9 @@ import (
 )
 
 const (
-	NotFound    = "page not found"
-	InvalidBody = "invalid body"
+	NotFound         = "page not found"
+	InvalidBody      = "invalid body"
+	MethodNotAllowed = "method not allowed"
 )
 
 // Request with expression
@@ -34,6 +36,15 @@ type Handler struct {
 	logger *logger.Logger
 }
 
+func SendJson(w io.Writer, v any) error {
+	data, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+	_, err = w.Write(data)
+	return err
+}
+
 // New handler
 func NewHandler(path string, logger *logger.Logger) *Handler {
 	return &Handler{path, logger}
@@ -43,7 +54,15 @@ func NewHandler(path string, logger *logger.Logger) *Handler {
 func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if h.path != r.URL.Path {
 		w.WriteHeader(http.StatusNotFound)
-		err := json.NewEncoder(w).Encode(ResponseError{NotFound})
+		err := SendJson(w, ResponseError{NotFound})
+		if err != nil {
+			h.logger.Fatalln(err)
+		}
+		return
+	}
+	if r.Method != http.MethodPost {
+		w.WriteHeader(http.StatusMethodNotAllowed)
+		err := SendJson(w, ResponseError{MethodNotAllowed})
 		if err != nil {
 			h.logger.Fatalln(err)
 		}
@@ -51,9 +70,9 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 	var req Request
 	err := json.NewDecoder(r.Body).Decode(&req)
-	if err != nil {
+	if err != nil || req.Expression == "" {
 		w.WriteHeader(http.StatusBadRequest)
-		err := json.NewEncoder(w).Encode(ResponseError{InvalidBody})
+		err := SendJson(w, ResponseError{InvalidBody})
 		if err != nil {
 			h.logger.Fatalln(err)
 		}
@@ -63,7 +82,7 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	res, err := calc.Calc(req.Expression)
 	if err != nil {
 		w.WriteHeader(422)
-		err := json.NewEncoder(w).Encode(ResponseError{err.Error()})
+		err := SendJson(w, ResponseError{err.Error()})
 		if err != nil {
 			h.logger.Fatalln(err)
 		}
@@ -71,7 +90,7 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 	h.logger.Printf("expression %s resulted to %.4f", req.Expression, res)
 
-	err = json.NewEncoder(w).Encode(ResponseOK{res})
+	err = SendJson(w, ResponseOK{res})
 	if err != nil {
 		h.logger.Fatalln(err)
 	}
