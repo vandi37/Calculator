@@ -51,6 +51,11 @@ func (l *Logger) Println(a ...any) {
 	l.writeln(0, a)
 }
 
+// Prints a formatted line
+func (l *Logger) Printf(format string, a ...any) {
+	l.writef(0, format, a)
+}
+
 // Prints a fatal line and exit
 func (l *Logger) Fatalln(a ...any) {
 	l.writeln(3, a)
