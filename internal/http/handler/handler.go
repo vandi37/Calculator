@@ -73,7 +73,7 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	res, err := calc.Calc(req.Expression)
 	if err != nil {
-		w.WriteHeader(422)
+		w.WriteHeader(http.StatusUnprocessableEntity)
 		SendJson(w, ResponseError{err.Error()})
 		return
 	}
