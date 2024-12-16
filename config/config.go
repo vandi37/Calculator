@@ -13,7 +13,7 @@ const (
 	ErrorDecodingConfig = "error decoding config"
 )
 
-// THe config
+// The config
 type Config struct {
 	Port int    `json:"port"`
 	Path string `json:"path"`
