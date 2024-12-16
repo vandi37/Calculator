@@ -69,6 +69,7 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		}
 		return
 	}
+	h.logger.Printf("expression %s resulted to %.4f", req.Expression, res)
 
 	err = json.NewEncoder(w).Encode(ResponseOK{res})
 	if err != nil {
