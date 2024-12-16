@@ -16,7 +16,7 @@ type Request struct {
 
 The expression is the mathematical expression. 
 
-In [calculator tests (TestCalc)](pkg\calc\calc_test.go) you can see a lot of examples with possible expressions, and TestCalcErrors are invalid expressions
+In [calculator tests (TestCalc)](pkg\calc\calc_test.go) you can see a lot of examples with possible expressions, and [TestCalcErrors](pkg\calc\calc_test.go) are invalid expressions
 
 ## How will the server response
 
@@ -42,7 +42,7 @@ type ResponseError struct {
 }
 ```
 
-You will get different error messages using [vanerrors](https://pkg.go.dev/github.com/vandi37/vanerrors@v0.7.1) format 
+You will get different error messages using [vanerrors](https://pkg.go.dev/github.com/vandi37/vanerrors@v0.7.1) json format 
 
 > The error names could be:
 > - "method not allowed"
