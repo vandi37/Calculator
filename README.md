@@ -88,6 +88,49 @@ You will get different error messages using [vanerrors](https://pkg.go.dev/githu
 
 - Congratulations, now the application is running
 
+## Examples
+
+(Switching by status)
+
+- 200
+
+    ```shell
+    curl --request POST \
+	--url "http://localhost:8080/api/v1/calculate" \
+	--header "Content-Type: application/json" \
+	--data '{"expression":"1+1"}'
+    ```
+
+- 400 
+
+    ```shell
+    curl --request POST \
+	--url "http://localhost:8080/api/v1/calculate" \
+	--header "Content-Type: application/json" \
+    --data "bebebe"
+    ```
+
+- 405 
+
+    ```shell
+    curl --request GET \
+	--url "http://localhost:8080/api/v1/calculate" \
+	--header "Content-Type: application/json" \
+	--data '{"expression":"1+1"}'
+    ```
+
+- 422
+
+    ```shell
+    curl --request POST \
+	--url "http://localhost:8080/api/v1/calculate" \
+	--header "Content-Type: application/json" \
+	--data '{"expression":"1+"}'
+    ``` 
+
+    (or other invalid expressions)
+
+
 ## License 
 
 [MIT](LICENSE)
