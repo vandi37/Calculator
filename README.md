@@ -32,7 +32,7 @@
 
 > [!NOTE]
 >
-> for Requests i have a special structure in [handler](internal\http\handler\handler.go)
+> for Requests i have a special structure in [handler](internal/http/handler)
 >
 > ```go
 > type Request struct {
@@ -53,7 +53,7 @@
 > [!TIP]
 >
 >
-> In [calculator tests (TestCalc)](pkg\calc\calc_test.go) you can see a lot of examples with possible expressions, and [TestCalcErrors](pkg\calc\calc_test.go) are invalid expressions
+> In [calculator tests (TestCalc)](pkg\calc\calc_test.go) you can see a lot of examples with possible expressions, and [TestCalcErrors](pkg\calc) are invalid expressions
 
 ## How will the server response
 
@@ -61,7 +61,7 @@
 >
 > ### OK
 > 
-> For responses i have a structure also in [handler](internal\http\handler\handler.go)
+> For responses i have a structure also in [handler](internal\http\handler)
 >
 > ```go
 > type ResponseOK struct {
@@ -83,7 +83,7 @@
 >
 > ### Error
 >
-> As for errors the struct (still in [handler](internal\http\handler\handler.go)) is a bit different
+> As for errors the struct (still in [handler](internal\http\handler)) is a bit different
 >
 > ```go
 > type ResponseError struct {
@@ -99,7 +99,7 @@
 >}
 >```
 >
-> You will get different error messages using [vanerrors](https://pkg.go.dev/github.com/vandi37/vanerrors@v0.7.1) json format and just text
+> You will get different error messages using [vanerrors](https://pkg.go.dev/github.com/vandi37/vanerrors@v0.8.2) json format and just text
 
 > [!TIP]
 >
@@ -130,9 +130,9 @@
 >
 >    You need to create a  configuration file
 >
->    Example json structure is in [current config](config\config.json)
+>    Example json structure is in [current config](config)
 >
->    Don't forgot to use your configuration data and to edit config path in [main](cmd\main.go)
+>    Don't forgot to use your configuration data and to edit config path in [main](cmd)
 > 
 
 > [!TIP]
@@ -209,7 +209,7 @@
 
 > [!TIP]
 >
-> To see more examples view [tests](internal\http\handler\handler_test.go)
+> To see more examples view [tests](internal\http\handler)
 
 ## License
 
