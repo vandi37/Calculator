@@ -49,6 +49,8 @@ func NewHandler(path string, calc *calc_service.Calculator) *Handler {
 }
 
 func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	w.Header().Add("Content-Type", "application/json")
+
 	if h.path != r.URL.Path {
 		w.WriteHeader(http.StatusNotFound)
 		SendJson(w, ResponseError{NotFound})

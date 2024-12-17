@@ -21,7 +21,9 @@ func New(config string) *Application {
 
 func (a *Application) Run() {
 	// Adding json errors mode
-	vanerrors.DefaultLoggerOptions.ShowAsJson = true
+	vanerrors.Options{
+		ShowAsJson: true,
+	}.SetAsDefault()
 
 	// Creating logger
 	logger := logger.New(os.Stderr)
