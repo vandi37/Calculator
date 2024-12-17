@@ -10,6 +10,7 @@ import (
 	"testing"
 
 	"github.com/vandi37/Calculator/internal/http/handler"
+	"github.com/vandi37/Calculator/pkg/calc_service"
 	"github.com/vandi37/Calculator/pkg/logger"
 )
 
@@ -36,7 +37,7 @@ func TestOk(t *testing.T) {
 		{`{"expression":"5+5/5"}`, `{"result":6}`},
 		{`{"expression":"12/4*3"}`, `{"result":9}`},
 	}
-	handler := handler.NewHandler("/", logger.New(os.Stderr))
+	handler := handler.NewHandler("/", calc_service.New(logger.New(os.Stderr)))
 	for _, testCase := range testCases {
 		t.Run(testCase.req, func(t *testing.T) {
 			req := httptest.NewRequest(http.MethodPost, "/", bytes.NewBuffer([]byte(testCase.req)))
@@ -74,7 +75,7 @@ func TestCalcError(t *testing.T) {
 		`{"expression":"abc"}`,
 	}
 
-	handler := handler.NewHandler("/", logger.New(os.Stderr))
+	handler := handler.NewHandler("/", calc_service.New(logger.New(os.Stderr)))
 	for _, testCase := range testCases {
 		t.Run(testCase, func(t *testing.T) {
 			req := httptest.NewRequest(http.MethodPost, "/", bytes.NewBuffer([]byte(testCase)))
@@ -120,7 +121,7 @@ func TestWrongBody(t *testing.T) {
 		`{"expression": "1+1", "}`,
 	}
 
-	handler := handler.NewHandler("/", logger.New(os.Stderr))
+	handler := handler.NewHandler("/", calc_service.New(logger.New(os.Stderr)))
 	for _, testCase := range testCases {
 		t.Run(testCase, func(t *testing.T) {
 			req := httptest.NewRequest(http.MethodPost, "/", bytes.NewBuffer([]byte(testCase)))
@@ -134,7 +135,7 @@ func TestWrongBody(t *testing.T) {
 }
 
 func TestWrongPage(t *testing.T) {
-	handler := handler.NewHandler("/", logger.New(os.Stderr))
+	handler := handler.NewHandler("/", calc_service.New(logger.New(os.Stderr)))
 	req := httptest.NewRequest(http.MethodPost, "/be", bytes.NewBuffer([]byte("")))
 	resp := httptest.NewRecorder()
 	handler.ServeHTTP(resp, req)
@@ -144,7 +145,7 @@ func TestWrongPage(t *testing.T) {
 }
 
 func TestWrongMethod(t *testing.T) {
-	handler := handler.NewHandler("/", logger.New(os.Stderr))
+	handler := handler.NewHandler("/", calc_service.New(logger.New(os.Stderr)))
 	req := httptest.NewRequest(http.MethodGet, "/", bytes.NewBuffer([]byte("")))
 	resp := httptest.NewRecorder()
 	handler.ServeHTTP(resp, req)

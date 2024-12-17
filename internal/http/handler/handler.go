@@ -5,8 +5,7 @@ import (
 	"io"
 	"net/http"
 
-	"github.com/vandi37/Calculator/pkg/calc"
-	"github.com/vandi37/Calculator/pkg/logger"
+	"github.com/vandi37/Calculator/pkg/calc_service"
 )
 
 const (
@@ -29,8 +28,9 @@ type ResponseError struct {
 }
 
 type Handler struct {
-	path   string
-	logger *logger.Logger
+	path string
+	fn   http.HandlerFunc
+	calc *calc_service.Calculator
 }
 
 func SendJson(w io.Writer, v any) error {
@@ -42,37 +42,21 @@ func SendJson(w io.Writer, v any) error {
 	return err
 }
 
-func NewHandler(path string, logger *logger.Logger) *Handler {
-	return &Handler{path, logger}
+func NewHandler(path string, calc *calc_service.Calculator) *Handler {
+	res := &Handler{path, nil, calc}
+	res.fn = CheckMethod(http.MethodPost, res.CalcHandler)
+	return res
 }
 
 func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	defer r.Body.Close()
-
 	if h.path != r.URL.Path {
 		w.WriteHeader(http.StatusNotFound)
 		SendJson(w, ResponseError{NotFound})
 		return
 	}
-	if r.Method != http.MethodPost {
-		w.WriteHeader(http.StatusMethodNotAllowed)
-		SendJson(w, ResponseError{MethodNotAllowed})
-	}
-	var req Request
-	err := json.NewDecoder(r.Body).Decode(&req)
-	if err != nil || req.Expression == "" {
-		w.WriteHeader(http.StatusBadRequest)
-		SendJson(w, ResponseError{InvalidBody})
-		return
+
+	if h.fn != nil {
+		h.fn.ServeHTTP(w, r)
 	}
 
-	res, err := calc.Calc(req.Expression)
-	if err != nil {
-		w.WriteHeader(http.StatusUnprocessableEntity)
-		SendJson(w, ResponseError{err.Error()})
-		return
-	}
-	h.logger.Printf("expression %s resulted to %.4f", req.Expression, res)
-
-	SendJson(w, ResponseOK{res})
 }
