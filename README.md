@@ -87,7 +87,7 @@
 >
 > ```go
 > type ResponseError struct {
-> Error string `json:"error"`
+> Error any `json:"error"`
 > }
 > ```
 >
@@ -99,7 +99,7 @@
 >}
 >```
 >
-> You will get different error messages using [vanerrors](https://pkg.go.dev/github.com/vandi37/vanerrors@v0.8.2) json format and just text
+> You will get different error messages using [vanerrors](https://pkg.go.dev/github.com/vandi37/vanerrors@v0.8.2) format and just text
 
 > [!TIP]
 >
@@ -117,6 +117,7 @@
 > - "number parsing error"
 > - "unknown operator"
 > - "divide by zero not allowed"
+> - "unknown calculator error"
 >
 > All this errors are based on wrong request, not server errors
 >
