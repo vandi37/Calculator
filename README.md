@@ -47,7 +47,7 @@
 > ```json
 > {
 >    "expression" : "2+2"
->}
+> }
 >```
 
 > [!TIP]
@@ -75,8 +75,8 @@
 >
 > ```json:
 > {
-> "result": 4
->}
+>    "result": 4
+> }
 >```
 
 > [!NOTE]
@@ -87,7 +87,7 @@
 >
 > ```go
 > type ResponseError struct {
-> Error any `json:"error"`
+>    Error string `json:"error"`
 > }
 > ```
 >
@@ -96,7 +96,7 @@
 > ```json
 > {
 >    "error" : "Error"
->}
+> }
 >```
 >
 > You will get different error messages using [vanerrors](https://pkg.go.dev/github.com/vandi37/vanerrors@v0.8.2) format and just text
@@ -172,6 +172,15 @@
 >    --header "Content-Type: application/json" \
 >    --data '{"expression":"1+1"}'
 > ```
+>
+> Result:
+>
+> ```json
+>{
+>    "result": 2
+>}
+> ```
+
 
 > [!CAUTION]
 >
@@ -182,7 +191,15 @@
 >    --url "<http://localhost:8080/api/v1/calculate>" \
 >    --header "Content-Type: application/json" \
 >    --data "bebebe"
->   ```
+> ```
+>
+> Result:
+>
+> ```json
+>{
+>    "error": "invalid body"
+>}
+>```
 
 > [!CAUTION]
 >
@@ -194,6 +211,14 @@
 >    --header "Content-Type: application/json" \
 >    --data '{"expression":"1+1"}'
 > ```
+>
+> Result
+>
+> ```json
+> {
+>    "error": "method not allowed"
+>}
+> ```
 
 > [!CAUTION]
 >
@@ -204,6 +229,14 @@
 >    --url "<http://localhost:8080/api/v1/calculate>" \
 >    --header "Content-Type: application/json" \
 >    --data '{"expression":"1+"}'
+> ```
+>
+> Result:
+>
+> ```json
+> {
+>    "error": "number parsing error: '' is not a number in expression '1+'"
+>}
 > ```
 >
 > (or other invalid expressions)
