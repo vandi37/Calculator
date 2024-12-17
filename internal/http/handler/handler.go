@@ -20,17 +20,14 @@ type Request struct {
 	Expression string `json:"expression"`
 }
 
-// Ok response
 type ResponseOK struct {
 	Result float64 `json:"result"`
 }
 
-// Error response
 type ResponseError struct {
 	Error string `json:"error"`
 }
 
-// Handler for http
 type Handler struct {
 	path   string
 	logger *logger.Logger
@@ -45,12 +42,10 @@ func SendJson(w io.Writer, v any) error {
 	return err
 }
 
-// New handler
 func NewHandler(path string, logger *logger.Logger) *Handler {
 	return &Handler{path, logger}
 }
 
-// Serves http
 func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
 
