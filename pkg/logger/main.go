@@ -10,7 +10,6 @@ import (
 	"github.com/vandi37/vanerrors/vanstack"
 )
 
-// The logger
 type Logger struct {
 	out        io.Writer
 	datePrefix string
@@ -24,7 +23,6 @@ var stdPrefixes = [2]string{
 
 var stdDate = "02.01.06 3:04:05"
 
-// Creates a new logger
 func New(out io.Writer) *Logger {
 	return NewWithSettings(out, stdDate, stdPrefixes)
 }

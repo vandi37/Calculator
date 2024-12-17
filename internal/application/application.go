@@ -6,6 +6,7 @@ import (
 	"github.com/vandi37/Calculator/config"
 	"github.com/vandi37/Calculator/internal/http/handler"
 	"github.com/vandi37/Calculator/internal/http/server"
+	"github.com/vandi37/Calculator/pkg/calc_service"
 	"github.com/vandi37/Calculator/pkg/logger"
 	"github.com/vandi37/vanerrors"
 )
@@ -31,8 +32,11 @@ func (a *Application) Run() {
 		logger.Fatalln(err)
 	}
 
+	// Crating calc service
+	service := calc_service.New(logger)
+
 	// Creating handler
-	handler := handler.NewHandler(config.Path, logger)
+	handler := handler.NewHandler(config.Path, service)
 
 	// Creating server
 	server := server.New(handler, config.Port)
