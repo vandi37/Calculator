@@ -22,7 +22,7 @@ const (
 )
 
 // Creating a new error writer
-var errorW = vanerrors.NewW(vanerrors.Options{ShowMessage: true, ShowCause: true, ShowAsJson: true}, vanerrors.EmptyLoggerOptions, vanerrors.EmptyHandler)
+var errorW = vanerrors.NewW(vanerrors.Options{ShowMessage: true, ShowCause: true}, vanerrors.EmptyLoggerOptions, vanerrors.EmptyHandler)
 
 var operators = []string{"*", "+", "/", "-"}
 
