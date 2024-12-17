@@ -7,6 +7,7 @@ import (
 
 type Calculator struct {
 	logger *logger.Logger
+	DoLog  bool
 }
 
 func New(logger *logger.Logger) *Calculator {
@@ -16,9 +17,13 @@ func New(logger *logger.Logger) *Calculator {
 func (c *Calculator) Run(expression string) (float64, error) {
 	res, err := calc.Calc(expression)
 	if err != nil {
-		c.logger.Printf("expression %s failed with error %v", expression, err)
+		if c.DoLog && c.logger != nil {
+			c.logger.Printf("expression %s failed with error %v", expression, err)
+		}
 		return 0, err
 	}
-	c.logger.Printf("expression %s resulted to %.4f", expression, res)
+	if c.DoLog && c.logger != nil {
+		c.logger.Printf("expression %s resulted to %.4f", expression, res)
+	}
 	return res, err
 }
