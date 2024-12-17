@@ -10,7 +10,7 @@
 >
 > | Name | Symbol | Supported | Error when | Description |
 > | ---- | ------ | --------- | -----------| ----------- |
-> | [Number](https://en.wikipedia.org/wiki/Rational_number) | [float64](https://go.dev/ref/spec#Numeric_types) | ☑ | - | It is just a number... nothing interesting |
+> | [Number](https://en.wikipedia.org/wiki/Rational_number) | [float64](https://go.dev/ref/spec#Numeric_types) | ✅ | - | It is just a number... nothing interesting |
 > | <ins>Multiply<ins> | * | ✅ | - | It has more priority that minus and plus, but less than brackets | 
 > | <ins>Division<ins> | / | ✅ | Division by 0 not allowed | It has more priority that minus and plus, but less than brackets |
 > | <ins>Adding<ins> | + | ✅ | - | It has less priority (the same as minus) |
