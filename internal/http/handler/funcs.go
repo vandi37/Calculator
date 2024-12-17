@@ -3,8 +3,6 @@ package handler
 import (
 	"encoding/json"
 	"net/http"
-
-	"github.com/vandi37/Calculator/pkg/calc"
 )
 
 func (h *Handler) CalcHandler(w http.ResponseWriter, r *http.Request) {
@@ -16,7 +14,7 @@ func (h *Handler) CalcHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	res, err := calc.Calc(req.Expression)
+	res, err := h.calc.Run(req.Expression)
 	if err != nil {
 		w.WriteHeader(http.StatusUnprocessableEntity)
 		SendJson(w, ResponseError{err.Error()})
