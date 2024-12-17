@@ -34,6 +34,8 @@ func (a *Application) Run() {
 
 	// Crating calc service
 	service := calc_service.New(logger)
+	// Adding logging
+	service.DoLog = config.DoLog
 
 	// Creating handler
 	handler := handler.NewHandler(config.Path, service)

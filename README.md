@@ -76,6 +76,8 @@ You will get different error messages using [vanerrors](https://pkg.go.dev/githu
 
         > path: the endpoint of the api
 
+        > do_log: does the program need to log every request in [calc service](pkg\calc_service)
+
     - Do not forget to edit config path in [main](cmd\main.go)
 
 - Running

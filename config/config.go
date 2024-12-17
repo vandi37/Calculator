@@ -15,8 +15,9 @@ const (
 
 // The config
 type Config struct {
-	Port int    `json:"port"`
-	Path string `json:"path"`
+	Port  int    `json:"port"`
+	Path  string `json:"path"`
+	DoLog bool   `json:"do_log"`
 }
 
 // Loads config
