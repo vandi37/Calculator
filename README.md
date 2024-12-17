@@ -53,7 +53,7 @@
 > [!TIP]
 >
 >
-> In [calculator tests (TestCalc)](pkg\calc\calc_test.go) you can see a lot of examples with possible expressions, and [TestCalcErrors](pkg\calc) are invalid expressions
+> In [calculator tests (TestCalc)](pkg\calc) you can see a lot of examples with possible expressions, and [TestCalcErrors](pkg\calc) are invalid expressions
 
 ## How will the server response
 
