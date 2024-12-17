@@ -125,7 +125,7 @@ func calcOrdered(expression string) (string, error) {
 
 		num2, err := strconv.ParseFloat(expressionTilEnd[:indexOfEnd], 64)
 		if err != nil {
-			return expression, vanerrors.NewSimple(ErrorParsingNumber, fmt.Sprintf("'%s' is not a number in expression '%s'", expression[:indexOfEnd], expression))
+			return expression, vanerrors.NewSimple(ErrorParsingNumber, fmt.Sprintf("'%s' is not a number in expression '%s'", expressionTilEnd[:indexOfEnd], expression))
 		}
 
 		opr := operation{num1: num1, symbol: operator, num2: num2}
@@ -190,12 +190,12 @@ func calcNotOrdered(expression string) (string, error) {
 
 		num1, err := strconv.ParseFloat(expressionBe4[indexBe4+1:], 64)
 		if err != nil {
-			return expression, vanerrors.NewSimple(ErrorParsingNumber, fmt.Sprintf("'%s' is not a number in expression '%s'", expression[:indexBe4+1], expression))
+			return expression, vanerrors.NewSimple(ErrorParsingNumber, fmt.Sprintf("'%s' is not a number in expression '%s'", expressionBe4[indexBe4+1:], expression))
 		}
 
 		num2, err := strconv.ParseFloat(expressionAfter[:indexAfter], 64)
 		if err != nil {
-			return expression, vanerrors.NewSimple(ErrorParsingNumber, fmt.Sprintf("'%s' is not a number in expression '%s'", expression[:indexAfter], expression))
+			return expression, vanerrors.NewSimple(ErrorParsingNumber, fmt.Sprintf("'%s' is not a number in expression '%s'", expressionAfter[:indexAfter], expression))
 		}
 
 		opr := operation{num1: num1, symbol: oprType, num2: num2}

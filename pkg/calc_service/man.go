@@ -1,11 +1,8 @@
 package calc_service
 
 import (
-	"fmt"
-
 	"github.com/vandi37/Calculator/pkg/calc"
 	"github.com/vandi37/Calculator/pkg/logger"
-	"github.com/vandi37/vanerrors"
 )
 
 type Calculator struct {
@@ -21,7 +18,6 @@ func (c *Calculator) Run(expression string) (float64, error) {
 	res, err := calc.Calc(expression)
 	if err != nil {
 		if c.DoLog && c.logger != nil {
-			fmt.Println(vanerrors.NewSimple("error"), vanerrors.DefaultOptions.ShowAsJson)
 			c.logger.Printf("expression %s failed with error %s", expression, err.Error())
 		}
 		return 0, err
