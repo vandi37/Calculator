@@ -35,18 +35,15 @@ func (h *Handler) CalcHandler(w http.ResponseWriter, r *http.Request) {
 	SendJson(w, ResponseOK{res})
 }
 
-func GetErrUnprocessableEntity(target error) []string {
+func GetErrUnprocessableEntity(target error) string {
 	err := vanerrors.Get(target)
 	if err == nil {
 		err = vanerrors.NewWrap(UnknownCalculatorError, err, vanerrors.EmptyHandler)
 	}
 	all := err.UnwrapAll()
-
-	var res []string
-
-	for _, e := range all {
-		res = append(res, e.Error())
+	if len(all) == 0 {
+		return UnknownCalculatorError
 	}
 
-	return res
+	return all[len(all)-1].Error()
 }

@@ -24,7 +24,7 @@ type ResponseOK struct {
 }
 
 type ResponseError struct {
-	Error any `json:"error"`
+	Error string `json:"error"`
 }
 
 type Handler struct {
