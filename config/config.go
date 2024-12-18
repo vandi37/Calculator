@@ -13,14 +13,12 @@ const (
 	ErrorDecodingConfig = "error decoding config"
 )
 
-// The config
 type Config struct {
 	Port  int    `json:"port"`
 	Path  string `json:"path"`
 	DoLog bool   `json:"do_log"`
 }
 
-// Loads config
 func LoadConfig(filepath string) (*Config, error) {
 	file, err := os.OpenFile(filepath, os.O_RDONLY|os.O_CREATE, 0666)
 	if err != nil {

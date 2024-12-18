@@ -19,7 +19,6 @@ func New(config string) *Application {
 }
 
 func (a *Application) Run() {
-
 	// Creating logger
 	logger := logger.New(os.Stderr)
 
