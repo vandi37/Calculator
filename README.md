@@ -163,10 +163,9 @@
 > 200 (OK)
 >
 > ```shell
-> curl --request POST \
->    --url "<http://localhost:8080/api/v1/calculate>" \
->    --header "Content-Type: application/json" \
->    --data '{"expression":"1+1"}'
+> curl 'localhost:4200/api/v1/calculate' \
+> --header 'Content-Type: application/json' \
+> --data '{"expression":"1+1"}'
 > ```
 >
 > Result:
@@ -183,10 +182,9 @@
 > 400 (Bad request)
 >
 > ```shell
-> curl --request POST \
->    --url "<http://localhost:8080/api/v1/calculate>" \
->    --header "Content-Type: application/json" \
->    --data "bebebe"
+> curl 'localhost:4200/api/v1/calculate' \
+> --header 'Content-Type: application/json' \
+> --data 'bebebe'
 > ```
 >
 > Result:
@@ -202,10 +200,9 @@
 > 405 (Method not allowed)
 >
 > ```shell
-> curl --request GET \
->    --url "<http://localhost:8080/api/v1/calculate>" \
->    --header "Content-Type: application/json" \
->    --data '{"expression":"1+1"}'
+> curl --request GET 'localhost:4200/api/v1/calculate' \
+> --header 'Content-Type: application/json' \
+> --data 'bebebe'
 > ```
 >
 > Result
@@ -221,10 +218,9 @@
 > 422 (Unprocessable Entity)
 >
 > ```shell
-> curl --request POST \
->    --url "<http://localhost:8080/api/v1/calculate>" \
->    --header "Content-Type: application/json" \
->    --data '{"expression":"1+"}'
+> curl 'localhost:4200/api/v1/calculate' \
+> --header 'Content-Type: application/json' \
+> --data '{"expression":"1+"}'
 > ```
 >
 > Result:
@@ -232,7 +228,7 @@
 > ```json
 > {
 >    "error": "number parsing error: '' is not a number in expression '1+'"
->}
+> }
 > ```
 >
 > (or other invalid expressions)
