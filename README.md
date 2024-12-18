@@ -158,7 +158,9 @@
 
 > [!TIP]
 >
-> If you use windows use git bash or [WSL](https://ru.wikipedia.org/wiki/Windows_Subsystem_for_Linux) for cURL requests
+> If you have windows use git bash or [WSL](https://ru.wikipedia.org/wiki/Windows_Subsystem_for_Linux) for cURL requests
+>
+> cURL badly works with Command Prompt, PowerShell etc...
 
 > [!NOTE]
 >
