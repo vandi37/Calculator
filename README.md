@@ -156,7 +156,9 @@
 
 ## Examples
 
-(Switching by status)
+> [!TIP]
+>
+> If you use windows use git bash or [WSL](https://ru.wikipedia.org/wiki/Windows_Subsystem_for_Linux) for cURL requests
 
 > [!NOTE]
 >
