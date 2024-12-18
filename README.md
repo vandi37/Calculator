@@ -202,7 +202,7 @@
 > ```shell
 > curl --request GET 'localhost:4200/api/v1/calculate' \
 > --header 'Content-Type: application/json' \
-> --data 'bebebe'
+> --data '{"expression":"1+1"}'
 > ```
 >
 > Result
