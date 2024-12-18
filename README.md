@@ -22,11 +22,11 @@
 >
 > | Name | Supported | Response status | Method | Path | Body | 
 > | ---- | --------- | --------------- | ------ | ---- | ---- |
-> | OK | ☑ | 200 | POST | /api/v1/calculate | ```{"expression:"2+2}``` | 
-> | Wrong Method | ☒ | 405 | GET or [other](https://ru.wikipedia.org/wiki/HTTP#Methods) | /api/v1/calculate | ```{"expression:"2+2}``` | 
-> | Wrong Path | ☒ | 404 | POST | /any/unsupported/path |  ```{"expression:"2+2}``` | 
+> | OK | ☑ | 200 | POST | /api/v1/calculate | ```{"expression:"2+2"}``` | 
+> | Wrong Method | ☒ | 405 | GET or [other](https://ru.wikipedia.org/wiki/HTTP#Methods) | /api/v1/calculate | ```{"expression:"2+2"}``` | 
+> | Wrong Path | ☒ | 404 | POST | /any/unsupported/path |  ```{"expression:"2+2"}``` | 
 > | Invalid Body | ☒ | 400 | POST | /api/v1/calculate | ```invalid body``` | 
-> | Error calculation | ☑ | 422 | POST | /api/v1/calculate | ```{"expression:"2*(2+2}``` | 
+> | Error calculation | ☑ | 422 | POST | /api/v1/calculate | ```{"expression:"2*(2+2}"``` | 
 
 ## How requests are send?
 
