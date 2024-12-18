@@ -109,11 +109,7 @@
 > - "invalid body"
 > - "page not found"
 > - "bracket should be opened"
-> - "error getting rid of brackets"
 > - "bracket should be closed"
-> - "error completing the expression"
-> - "error completing order operation"
-> - "error doing operation"
 > - "number parsing error"
 > - "unknown operator"
 > - "divide by zero not allowed"
@@ -248,5 +244,3 @@
 ## License
 
 [MIT](LICENSE)
-
-## Other
