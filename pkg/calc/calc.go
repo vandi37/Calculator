@@ -10,19 +10,12 @@ import (
 
 // Error names
 const (
-	ErrorDivideByZero             = "divide by zero not allowed"
-	ErrorUnknownOperator          = "unknown operator"
-	ErrorParsingNumber            = "number parsing error"
-	ErrorDoingOperation           = "error doing operation"
-	ErrorCompletingOrderOperation = "error completing order operation"
-	ErrorExpressionCompleting     = "error completing the expression"
-	ErrorBracketShouldBeClosed    = "bracket should be closed"
-	ErrorBracketOf                = "error getting rid of brackets"
-	ErrorBracketShouldBeOpened    = "bracket should be opened"
+	ErrorDivideByZero          = "divide by zero not allowed"
+	ErrorUnknownOperator       = "unknown operator"
+	ErrorParsingNumber         = "number parsing error"
+	ErrorBracketShouldBeClosed = "bracket should be closed"
+	ErrorBracketShouldBeOpened = "bracket should be opened"
 )
-
-// Creating a new error writer
-var errorW = vanerrors.NewW(vanerrors.Options{ShowMessage: true, ShowCause: true}, vanerrors.EmptyLoggerOptions, vanerrors.EmptyHandler)
 
 var operators = []string{"*", "+", "/", "-"}
 
@@ -132,7 +125,7 @@ func calcOrdered(expression string) (string, error) {
 
 		result, err := opr.run()
 		if err != nil {
-			return expression, errorW.New(vanerrors.ErrorData{Name: ErrorDoingOperation, Message: fmt.Sprintf("could not do operation '%s' in expression '%s'", opr.String(), expression), Cause: err})
+			return expression, err
 		}
 
 		expression = strings.Replace(expression, opr.String(), strconv.FormatFloat(result, 'f', -1, 64), 1)
@@ -165,7 +158,7 @@ func calcNotOrdered(expression string) (string, error) {
 		if indexDiv == indexMul {
 			expression, err := calcOrdered(expression)
 			if err != nil {
-				return expression, errorW.New(vanerrors.ErrorData{Name: ErrorCompletingOrderOperation, Message: fmt.Sprintf("could not do order operation of expression '%s'", expression), Cause: err})
+				return expression, err
 			}
 			return expression, nil
 		}
@@ -202,7 +195,7 @@ func calcNotOrdered(expression string) (string, error) {
 
 		result, err := opr.run()
 		if err != nil {
-			return expression, errorW.New(vanerrors.ErrorData{Name: ErrorDoingOperation, Message: fmt.Sprintf("could not do operation '%s' in expression '%s'", opr.String(), expression), Cause: err})
+			return expression, err
 		}
 
 		expression = strings.Replace(expression, opr.String(), strconv.FormatFloat(result, 'f', -1, 64), 1)
@@ -240,7 +233,7 @@ func calcWithBrackets(expression string) (string, error) {
 
 		subExpression, err := calcNotOrdered(subExpression)
 		if err != nil {
-			return expression, errorW.New(vanerrors.ErrorData{Name: ErrorExpressionCompleting, Message: fmt.Sprintf("could not complete expression '%s'", subExpression), Cause: err})
+			return expression, err
 		}
 
 		expression = strings.Replace(expression, expression[indexOpen:indexClose+1], subExpression, 1)
@@ -257,12 +250,12 @@ func Calc(expression string) (float64, error) {
 
 	expression, err := calcWithBrackets(expression)
 	if err != nil {
-		return float64(0), errorW.New(vanerrors.ErrorData{Name: ErrorBracketOf, Message: fmt.Sprintf("error getting rid of brackets in expression '%s'", expression), Cause: err})
+		return float64(0), err
 	}
 
 	expression, err = calcNotOrdered(expression)
 	if err != nil {
-		return float64(0), errorW.New(vanerrors.ErrorData{Name: ErrorExpressionCompleting, Message: fmt.Sprintf("could not completing of expression '%s'", expression), Cause: err})
+		return float64(0), err
 	}
 
 	return strconv.ParseFloat(expression, 64)
