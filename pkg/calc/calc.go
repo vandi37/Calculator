@@ -144,21 +144,17 @@ func calcNotOrdered(expression string) (string, error) {
 		indexMul := strings.Index(expression, "*")
 		indexDiv := strings.Index(expression, "/")
 
+		// If they are the same (they don't exist)
+		if indexDiv == indexMul {
+			return calcOrdered(expression)
+		}
+
 		// If the indexes do not exist (equal -1)
 		if indexDiv == -1 {
 			indexDiv = len(expression)
 		}
 		if indexMul == -1 {
 			indexMul = len(expression)
-		}
-
-		// If they are the same (they don't exist)
-		if indexDiv == indexMul {
-			expression, err := calcOrdered(expression)
-			if err != nil {
-				return expression, err
-			}
-			return expression, nil
 		}
 
 		index := -1
@@ -176,6 +172,7 @@ func calcNotOrdered(expression string) (string, error) {
 		expressionBe4 := expression[:index]
 		expressionAfter := expression[index+1:]
 
+		// Finding the index of the first fined operation.
 		indexBe4, _ := findIndex(expressionBe4, func(i1, i2 int) bool { return i1 > i2 }, -1, strings.LastIndex)
 		indexAfter, _ := findIndex(expressionAfter, func(i1, i2 int) bool { return i1 < i2 }, len(expressionAfter), strings.Index)
 
