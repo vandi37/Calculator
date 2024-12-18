@@ -8,7 +8,6 @@ import (
 	"github.com/vandi37/vanerrors"
 )
 
-// Error names
 const (
 	ErrorDivideByZero          = "divide by zero not allowed"
 	ErrorUnknownOperator       = "unknown operator"
@@ -19,7 +18,6 @@ const (
 
 var operators = []string{"*", "+", "/", "-"}
 
-// Operation struct
 type operation struct {
 	num1 float64
 	// Operation type (one of operations)
