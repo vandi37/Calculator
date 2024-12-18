@@ -138,7 +138,7 @@
 >
 > - __path__: the endpoint of the api
 >
-> - __do_log__: does the program need to log every request in [calc service](pkg\calc_service)
+> - __do_log__: does the program need to log every request in [calc service](pkg/calc_service)
 
 > [!IMPORTANT]
 >
