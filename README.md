@@ -10,23 +10,23 @@
 >
 > | Name | Symbol | Supported | Error when | Description |
 > | ---- | ------ | --------- | -----------| ----------- |
-> | [Number](https://en.wikipedia.org/wiki/Rational_number) | [float64](https://go.dev/ref/spec#Numeric_types) | ✅ | - | It is just a number... nothing interesting |
-> | <ins>Multiply<ins> | * | ✅ | - | It has more priority that minus and plus, but less than brackets | 
-> | <ins>Division<ins> | / | ✅ | Division by 0 not allowed | It has more priority that minus and plus, but less than brackets |
-> | <ins>Adding<ins> | + | ✅ | - | It has less priority (the same as minus) |
-> | <ins>Subtraction<ins> | - | ✅ | - | It has less priority (the same as plus) |
-> | <ins>Brackets<ins> | (, ) |  ✅ | Bracket not closed / not opened | The most priority has the bracket body & be careful: 10(1+1) = 102  |
-> | <ins>Other<ins> | [any](https://symbl.cc/en/unicode-table/#combining-diacritical-marks) | ❌ | Cant convert to float | Don't try to use them |
+> | [Number](https://en.wikipedia.org/wiki/Rational_number) | [float64](https://go.dev/ref/spec#Numeric_types) | ☑ | - | It is just a number... nothing interesting |
+> | <ins>Multiply<ins> | * | ☑ | - | It has more priority that minus and plus, but less than brackets | 
+> | <ins>Division<ins> | / | ☑ | Division by 0 not allowed | It has more priority that minus and plus, but less than brackets |
+> | <ins>Adding<ins> | + | ☑ | - | It has less priority (the same as minus) |
+> | <ins>Subtraction<ins> | - | ☑ | - | It has less priority (the same as plus) |
+> | <ins>Brackets<ins> | (, ) |  ☑ | Bracket not closed / not opened | The most priority has the bracket body & be careful: 10(1+1) = 102  |
+> | <ins>Other<ins> | [any](https://symbl.cc/en/unicode-table/#combining-diacritical-marks) | ☒ | Cant convert to float | Don't try to use them |
 >
 > ### HTTP
 >
 > | Name | Supported | Response status | Method | Path | Body | 
 > | ---- | --------- | --------------- | ------ | ---- | ---- |
-> | OK | ✅ | 200 | POST | /api/v1/calculate | ```{"expression:"2+2}``` | 
-> | Wrong Method | ❌ | 405 | GET or [other](https://ru.wikipedia.org/wiki/HTTP#Methods) | /api/v1/calculate | ```{"expression:"2+2}``` | 
-> | Wrong Path | ❌ | 404 | POST | /any/unsupported/path |  ```{"expression:"2+2}``` | 
-> | Invalid Body | ❌ | 400 | POST | /api/v1/calculate | ```invalid body``` | 
-> | Error calculation | ✅ | 422 | POST | /api/v1/calculate | ```{"expression:"2*(2+2}``` | 
+> | OK | ☑ | 200 | POST | /api/v1/calculate | ```{"expression:"2+2}``` | 
+> | Wrong Method | ☒ | 405 | GET or [other](https://ru.wikipedia.org/wiki/HTTP#Methods) | /api/v1/calculate | ```{"expression:"2+2}``` | 
+> | Wrong Path | ☒ | 404 | POST | /any/unsupported/path |  ```{"expression:"2+2}``` | 
+> | Invalid Body | ☒ | 400 | POST | /api/v1/calculate | ```invalid body``` | 
+> | Error calculation | ☑ | 422 | POST | /api/v1/calculate | ```{"expression:"2*(2+2}``` | 
 
 ## How requests are send?
 
