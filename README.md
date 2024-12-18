@@ -15,7 +15,7 @@
 > | <ins>Division<ins> | / | ✅ | Division by 0 not allowed | It has more priority that minus and plus, but less than brackets |
 > | <ins>Adding<ins> | + | ✅ | - | It has less priority (the same as minus) |
 > | <ins>Subtraction<ins> | - | ✅ | - | It has less priority (the same as plus) |
-> | <ins>Brackets<ins> | (, ) |  ✅ | Bracket not closed / not opened | The most priority has the bracket body & be careful: 10(1+1) = 12  |
+> | <ins>Brackets<ins> | (, ) |  ✅ | Bracket not closed / not opened | The most priority has the bracket body & be careful: 10(1+1) = 102  |
 > | <ins>Other<ins> | [any](https://symbl.cc/en/unicode-table/#combining-diacritical-marks) | ❌ | Cant convert to float | Don't try to use them |
 >
 > ### HTTP
