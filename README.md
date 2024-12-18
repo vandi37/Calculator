@@ -73,7 +73,7 @@
 >
 > In json it would look like
 >
-> ```json:
+> ```json
 > {
 >    "result": 4
 > }
@@ -99,7 +99,7 @@
 > }
 >```
 >
-> You will get different error messages using [vanerrors](https://pkg.go.dev/github.com/vandi37/vanerrors@v0.8.2) format and just text
+> You will get different error messages using [vanerrors](https://pkg.go.dev/github.com/vandi37/vanerrors@v0.8.2) format for [simple errors](https://pkg.go.dev/github.com/vandi37/vanerrors@v0.8.2#NewSimple) and just text
 
 > [!TIP]
 >
@@ -171,9 +171,9 @@
 > Result:
 >
 > ```json
->{
+> {
 >    "result": 2
->}
+> }
 > ```
 
 
@@ -190,9 +190,9 @@
 > Result:
 >
 > ```json
->{
+> {
 >    "error": "invalid body"
->}
+> }
 >```
 
 > [!CAUTION]
@@ -210,7 +210,7 @@
 > ```json
 > {
 >    "error": "method not allowed"
->}
+> }
 > ```
 
 > [!CAUTION]
