@@ -20,19 +20,19 @@
 >
 > ### HTTP
 >
-> | Name | Supported | Response status | Method | Path | Body | 
-> | ---- | --------- | --------------- | ------ | ---- | ---- |
-> | OK | ☑ | 200 | POST | /api/v1/calculate | ```{"expression:"2+2"}``` | 
-> | Wrong Method | ☒ | 405 | GET or [other](https://ru.wikipedia.org/wiki/HTTP#Methods) | /api/v1/calculate | ```{"expression:"2+2"}``` | 
-> | Wrong Path | ☒ | 404 | POST | /any/unsupported/path |  ```{"expression:"2+2"}``` | 
-> | Invalid Body | ☒ | 400 | POST | /api/v1/calculate | ```invalid body``` | 
-> | Error calculation | ☑ | 422 | POST | /api/v1/calculate | ```{"expression:"2*(2+2"}"``` | 
+> | Name | Response status | Method | Path | Body | 
+> | ----  | --------------- | ------ | ---- | ---- |
+> | OK | 200 | POST | /api/v1/calculate | ```{"expression:"2+2"}``` | 
+> | Wrong Method | 405 | GET or [other](https://ru.wikipedia.org/wiki/HTTP#Methods) | /api/v1/calculate | ```{"expression:"2+2"}``` | 
+> | Wrong Path | 404 | POST | /any/unsupported/path |  ```{"expression:"2+2"}``` | 
+> | Invalid Body | 400 | POST | /api/v1/calculate | ```invalid body``` | 
+> | Error calculation | 422 | POST | /api/v1/calculate | ```{"expression:"2*(2+2"}"``` | 
 
 ## How requests are send?
 
 > [!NOTE]
 >
-> for Requests i have a special structure in [handler](internal/http/handler)
+> for Requests i have a special structure in [handler](internal/http/handler/handler.go)
 >
 > ```go
 > type Request struct {
@@ -53,7 +53,7 @@
 > [!TIP]
 >
 >
-> In [calculator tests (TestCalc)](pkg\calc) you can see a lot of examples with possible expressions, and [TestCalcErrors](pkg\calc) are invalid expressions
+> In [calculator tests (TestCalc)](pkg/calc/calc_test.go) you can see a lot of examples with possible expressions, and [TestCalcErrors](pkg/calc/calc_test.go) are invalid expressions
 
 ## How will the server response
 
@@ -61,7 +61,7 @@
 >
 > ### OK
 > 
-> For responses i have a structure also in [handler](internal\http\handler)
+> For responses i have a structure also in [handler](internal/http/handler/handler.go)
 >
 > ```go
 > type ResponseOK struct {
@@ -83,7 +83,7 @@
 >
 > ### Error
 >
-> As for errors the struct (still in [handler](internal\http\handler)) is a bit different
+> As for errors the struct (still in [handler](internal/http/handler/handler.go)) is a bit different
 >
 > ```go
 > type ResponseError struct {
@@ -127,9 +127,9 @@
 >
 >    You need to create a  configuration file
 >
->    Example json structure is in [current config](config)
+>    Example json structure is in [current config](config/config.json)
 >
->    Don't forgot to use your configuration data and to edit config path in [main](cmd)
+>    Don't forgot to use your configuration data and to edit config path in [main](cmd/main.go)
 > 
 
 > [!TIP]
@@ -138,7 +138,7 @@
 >
 > - __path__: the endpoint of the api
 >
-> - __do_log__: does the program need to log every request in [calc service](pkg/calc_service)
+> - __do_log__: does the program need to log every request in [calc service](pkg/calc_service/main.go)
 
 > [!IMPORTANT]
 >
@@ -239,7 +239,7 @@
 
 > [!TIP]
 >
-> To see more examples view [tests](internal\http\handler)
+> To see more examples view [tests](internal/http/handler/handler_test.go)
 
 ## License
 
