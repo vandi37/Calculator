@@ -156,7 +156,7 @@
 
 ## Examples
 
-> [!TIP]
+> [!CAUTION]
 >
 > If you have windows use git bash or [WSL](https://ru.wikipedia.org/wiki/Windows_Subsystem_for_Linux) for cURL requests
 >
