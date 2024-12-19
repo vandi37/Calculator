@@ -26,7 +26,7 @@
 > | Wrong Method | ☒ | 405 | GET or [other](https://ru.wikipedia.org/wiki/HTTP#Methods) | /api/v1/calculate | ```{"expression:"2+2"}``` | 
 > | Wrong Path | ☒ | 404 | POST | /any/unsupported/path |  ```{"expression:"2+2"}``` | 
 > | Invalid Body | ☒ | 400 | POST | /api/v1/calculate | ```invalid body``` | 
-> | Error calculation | ☑ | 422 | POST | /api/v1/calculate | ```{"expression:"2*(2+2}"``` | 
+> | Error calculation | ☑ | 422 | POST | /api/v1/calculate | ```{"expression:"2*(2+2"}"``` | 
 
 ## How requests are send?
 
@@ -156,7 +156,7 @@
 
 ## Examples
 
-> [!TIP]
+> [!CAUTION]
 >
 > If you have windows use git bash or [WSL](https://ru.wikipedia.org/wiki/Windows_Subsystem_for_Linux) for cURL requests
 >
