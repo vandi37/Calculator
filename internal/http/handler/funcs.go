@@ -9,11 +9,6 @@ const (
 	UnknownCalculatorError = "unknown calculator error"
 )
 
-type Error struct {
-	Main  string `json:"main"`
-	Cause any    `json:"cause"`
-}
-
 func (h *Handler) CalcHandler(w http.ResponseWriter, r *http.Request) {
 	var req Request
 	err := json.NewDecoder(r.Body).Decode(&req)
