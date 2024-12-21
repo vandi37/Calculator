@@ -32,7 +32,7 @@
 
 > [!NOTE]
 >
-> for Requests i have a special structure in [handler](internal/http/handler/handler.go)
+> for Requests i have a special structure in [input](internal/http/input/input.go)
 >
 > ```go
 > type Request struct {
@@ -61,7 +61,7 @@
 >
 > ### OK
 > 
-> For responses i have a structure also in [handler](internal/http/handler/handler.go)
+> For responses i have a structure in [responses](internal/http/resp/resp.go)
 >
 > ```go
 > type ResponseOK struct {
@@ -83,7 +83,7 @@
 >
 > ### Error
 >
-> As for errors the struct (still in [handler](internal/http/handler/handler.go)) is a bit different
+> As for errors the struct (still in [responses](internal/http/resp/resp.go)) is a bit different
 >
 > ```go
 > type ResponseError struct {

@@ -14,22 +14,8 @@ const (
 	MethodNotAllowed = "method not allowed"
 )
 
-// Request with expression
-type Request struct {
-	Expression string `json:"expression"`
-}
-
-type ResponseOK struct {
-	Result float64 `json:"result"`
-}
-
-type ResponseError struct {
-	Error string `json:"error"`
-}
-
 type Handler struct {
-	path string
-	fn   http.HandlerFunc
+	*http.ServeMux
 	calc *calc_service.Calculator
 }
 
@@ -43,22 +29,10 @@ func SendJson(w io.Writer, v any) error {
 }
 
 func NewHandler(path string, calc *calc_service.Calculator) *Handler {
-	res := &Handler{path, nil, calc}
-	res.fn = CheckMethod(http.MethodPost, res.CalcHandler)
+	res := &Handler{http.NewServeMux(), calc}
+	res.ServeMux.HandleFunc(path, CheckPath(path, CheckMethod(http.MethodPost, res.CalcHandler)))
+	if path != "/" {
+		res.ServeMux.HandleFunc("/", NotFoundHandler)
+	}
 	return res
-}
-
-func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	w.Header().Add("Content-Type", "application/json")
-
-	if h.path != r.URL.Path {
-		w.WriteHeader(http.StatusNotFound)
-		SendJson(w, ResponseError{NotFound})
-		return
-	}
-
-	if h.fn != nil {
-		h.fn.ServeHTTP(w, r)
-	}
-
 }

@@ -135,10 +135,18 @@ func TestWrongBody(t *testing.T) {
 }
 
 func TestWrongPage(t *testing.T) {
-	handler := handler.NewHandler("/", calc_service.New(logger.New(os.Stderr)))
+	hand := handler.NewHandler("/", calc_service.New(logger.New(os.Stderr)))
 	req := httptest.NewRequest(http.MethodPost, "/be", bytes.NewBuffer([]byte("")))
 	resp := httptest.NewRecorder()
-	handler.ServeHTTP(resp, req)
+	hand.ServeHTTP(resp, req)
+	if resp.Code != http.StatusNotFound {
+		t.Errorf("Wrong status code, expected 404, got: %d", resp.Code)
+	}
+
+	hand = handler.NewHandler("/other", calc_service.New(logger.New(os.Stderr)))
+	req = httptest.NewRequest(http.MethodPost, "/be", bytes.NewBuffer([]byte("")))
+	resp = httptest.NewRecorder()
+	hand.ServeHTTP(resp, req)
 	if resp.Code != http.StatusNotFound {
 		t.Errorf("Wrong status code, expected 404, got: %d", resp.Code)
 	}
