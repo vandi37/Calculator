@@ -30,9 +30,10 @@ func SendJson(w io.Writer, v any) error {
 
 func NewHandler(path string, calc *calc_service.Calculator) *Handler {
 	res := &Handler{http.NewServeMux(), calc}
-	res.ServeMux.HandleFunc(path, CheckPath(path, CheckMethod(http.MethodPost, res.CalcHandler)))
+	res.HandleFunc(path, ContentType(CheckPath(path, CheckMethod(http.MethodPost, res.CalcHandler))))
+	res.HandleFunc("/coffee/", ContentType(SendCoffeeHandler))
 	if path != "/" {
-		res.ServeMux.HandleFunc("/", NotFoundHandler)
+		res.HandleFunc("/", ContentType(NotFoundHandler))
 	}
 	return res
 }

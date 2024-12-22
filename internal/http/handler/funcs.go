@@ -35,3 +35,8 @@ func NotFoundHandler(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNotFound)
 	SendJson(w, resp.ResponseError{Error: NotFound})
 }
+
+func SendCoffeeHandler(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusTeapot)
+	SendJson(w, resp.ResponseError{Error: "I can't make coffee"})
+}
