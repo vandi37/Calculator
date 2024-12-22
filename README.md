@@ -6,6 +6,8 @@
 >
 > It is a http api, based on math expressions using numbers, sings as "+", "-", "*" and "/". Also managing with brackets "(" and ")"
 >
+> > to contact the creator write in telegram: https://t.me/vandi37 or write an email Lev-person11@yandex.ru
+>
 > ### Calculator
 >
 > | Name | Symbol | Supported | Error when | Description |
