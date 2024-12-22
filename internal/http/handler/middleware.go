@@ -26,3 +26,10 @@ func CheckPath(path string, next http.HandlerFunc) http.HandlerFunc {
 		next(w, r)
 	}
 }
+
+func ContentType(next http.HandlerFunc) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Add("Content-Type", "application/json")
+		next(w, r)
+	}
+}
