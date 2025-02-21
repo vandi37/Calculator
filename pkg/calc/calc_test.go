@@ -1,10 +1,22 @@
 package calc_test
 
 import (
+	"math"
 	"testing"
 
+	"github.com/vandi37/Calculator/internal/agent/do"
+	"github.com/vandi37/Calculator/internal/agent/module"
 	"github.com/vandi37/Calculator/pkg/calc"
+	"github.com/vandi37/Calculator/pkg/parsing/tree"
 )
+
+func send(arg1, arg2 float64, operation tree.ExprSep) (chan float64, error) {
+	getter := make(chan float64)
+	go func() {
+		getter <- do.Do(module.Request{Id: 0, Arg1: arg1, Arg2: arg2, Operation: operation, OperationTimeMs: 1})
+	}()
+	return getter, nil
+}
 
 func TestCalc(t *testing.T) {
 	testCases := []struct {
@@ -33,11 +45,17 @@ func TestCalc(t *testing.T) {
 		{"9*-1", 9 * -1},
 		{"10*(10/10*-10)", 10 * 10 / 10 * -10},
 		{"10*-10", 10 * -10},
+		{"10/0", math.Inf(1)},
+		{"-10/0", math.Inf(-1)},
 	}
 
 	for _, testCase := range testCases {
 		t.Run(testCase.expression, func(t *testing.T) {
-			result, err := calc.Calc(testCase.expression)
+			pre, err := calc.Pre(testCase.expression)
+			if err != nil {
+				t.Errorf("Pre(%s) error: %v", testCase.expression, err)
+			}
+			result, err := calc.Calc(pre, send)
 			if err != nil {
 				t.Errorf("Calc(%s) error: %v", testCase.expression, err)
 			} else if result != testCase.expected {
@@ -49,7 +67,6 @@ func TestCalc(t *testing.T) {
 
 func TestCalcErrors(t *testing.T) {
 	testCases := []string{
-		"10/0",
 		"2*(10+9",
 		"not numbs",
 		"2r+10b",
@@ -67,9 +84,9 @@ func TestCalcErrors(t *testing.T) {
 
 	for _, testCase := range testCases {
 		t.Run(testCase, func(t *testing.T) {
-			_, err := calc.Calc(testCase)
+			_, err := calc.Pre(testCase)
 			if err == nil {
-				t.Errorf("Calc(%s) error is not nil", testCase)
+				t.Errorf("Pre(%s) error is not nil", testCase)
 			}
 		})
 	}

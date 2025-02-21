@@ -1,8 +1,16 @@
 package main
 
-import "github.com/vandi37/Calculator/internal/application"
+import (
+	"context"
+	"os"
+	"os/signal"
+
+	"github.com/vandi37/Calculator/internal/application"
+)
 
 func main() {
-	app := application.New("config/config.json")
-	app.Run()
+	ctx, cancel := signal.NotifyContext(context.Background(), os.Interrupt, os.Kill)
+	defer cancel()
+	app := application.New("configs/config.json")
+	app.Run(ctx)
 }

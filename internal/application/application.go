@@ -1,13 +1,17 @@
 package application
 
 import (
+	"context"
 	"os"
 
-	"github.com/vandi37/Calculator/config"
-	"github.com/vandi37/Calculator/internal/http/handler"
-	"github.com/vandi37/Calculator/internal/http/server"
-	"github.com/vandi37/Calculator/pkg/calc_service"
+	"github.com/vandi37/Calculator/internal/agent/get"
+	"github.com/vandi37/Calculator/internal/config"
+	"github.com/vandi37/Calculator/internal/ms"
+	"github.com/vandi37/Calculator/internal/transport/handler"
+	"github.com/vandi37/Calculator/internal/transport/server"
+	"github.com/vandi37/Calculator/internal/wait"
 	"github.com/vandi37/Calculator/pkg/logger"
+	"go.uber.org/zap"
 )
 
 type Application struct {
@@ -18,31 +22,34 @@ func New(config string) *Application {
 	return &Application{config}
 }
 
-func (a *Application) Run() {
-	// Creating logger
-	logger := logger.New(os.Stderr)
+func (a *Application) Run(ctx context.Context) {
+	logger := logger.Setup()
 
-	// Loading config
 	config, err := config.LoadConfig(a.config)
 	if err != nil {
-		logger.Fatalln(err)
+		logger.Fatal("error loading config", zap.Error(err))
 	}
 
-	// Crating calc service
-	service := calc_service.New(logger)
-	// Adding logging
-	service.DoLog = config.DoLog
+	// building agent
+	// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-	// Creating handler
-	handler := handler.NewHandler(config.Path, service)
+	get.RunMultiple(config.ComputingPower, config.Path.Task, config.Port, config.MaxAgentErrors, config.AgentPeriodicityMs, logger)
 
-	// Creating server
+	// Server
+	// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	handler := handler.NewHandler(config.Path, wait.New(ms.From(*config), logger))
+
 	server := server.New(handler, config.Port)
 
-	// Running server
-	err = server.Run()
-	if err != nil {
-		logger.Fatalln(err)
-	}
-	// The program end
+	go func() {
+		if err := server.Run(); err != nil {
+			logger.Fatal("error running server", zap.Error(err))
+		}
+	}()
+
+	// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+	<-ctx.Done()
+	logger.Info("program exit")
+	os.Exit(0)
 }
