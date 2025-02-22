@@ -1,7 +1,15 @@
-package calc_test
+// This tests cover
+//
+// 1. `../pkg/parsing/` (lexer, parser, ast)
+//
+// 2. `../pkg/calc/` (running ast)
+//
+// 3. `../internal/agent/do` (doing the short tasks)
+//
+// In this case i think it isn't necessary to create separate tests for this modules
+package main
 
 import (
-	"math"
 	"testing"
 
 	"github.com/vandi37/Calculator/internal/agent/do"
@@ -10,7 +18,7 @@ import (
 	"github.com/vandi37/Calculator/pkg/parsing/tree"
 )
 
-func send(arg1, arg2 float64, operation tree.ExprSep) (chan float64, error) {
+func send(arg1, arg2 float64, operation tree.ExprSep) (<-chan float64, error) {
 	getter := make(chan float64)
 	go func() {
 		getter <- do.Do(module.Request{Id: 0, Arg1: arg1, Arg2: arg2, Operation: operation, OperationTimeMs: 1})
@@ -45,8 +53,6 @@ func TestCalc(t *testing.T) {
 		{"9*-1", 9 * -1},
 		{"10*(10/10*-10)", 10 * 10 / 10 * -10},
 		{"10*-10", 10 * -10},
-		{"10/0", math.Inf(1)},
-		{"-10/0", math.Inf(-1)},
 	}
 
 	for _, testCase := range testCases {
@@ -89,5 +95,16 @@ func TestCalcErrors(t *testing.T) {
 				t.Errorf("Pre(%s) error is not nil", testCase)
 			}
 		})
+	}
+}
+
+func TestZero(t *testing.T) {
+	pre, err := calc.Pre("10/0")
+	if err != nil {
+		t.Errorf("Pre(%s) error: %v", "10/0", err)
+	}
+	_, err = calc.Calc(pre, send)
+	if err == nil {
+		t.Errorf("Calc(%s) error is not nil", "10/0")
 	}
 }

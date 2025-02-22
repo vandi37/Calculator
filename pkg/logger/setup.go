@@ -9,8 +9,8 @@ import (
 
 var dateLayout = "02'01'06 3:04:05"
 
-func Setup() *zap.Logger {
-	return zap.New(zapcore.NewCore(
+func Setup() zapcore.Core {
+	return zapcore.NewCore(
 		zapcore.NewConsoleEncoder(zapcore.EncoderConfig{
 			MessageKey:     ">>",
 			LevelKey:       "!!",
@@ -26,5 +26,42 @@ func Setup() *zap.Logger {
 		}),
 		zapcore.Lock(os.Stderr),
 		zap.NewAtomicLevelAt(zap.DebugLevel),
-	), zap.AddStacktrace(zap.ErrorLevel))
+	)
+}
+
+func Prod(writer zapcore.WriteSyncer) zapcore.Core {
+	return zapcore.NewCore(
+		zapcore.NewJSONEncoder(zapcore.EncoderConfig{
+			MessageKey:     "msg",
+			LevelKey:       "lvl",
+			TimeKey:        "t",
+			NameKey:        "name",
+			CallerKey:      "call",
+			StacktraceKey:  "stack",
+			EncodeLevel:    zapcore.LowercaseLevelEncoder,
+			EncodeTime:     zapcore.RFC3339TimeEncoder,
+			EncodeDuration: zapcore.StringDurationEncoder,
+			EncodeCaller:   zapcore.FullCallerEncoder,
+			EncodeName:     zapcore.FullNameEncoder,
+		}),
+		zapcore.Lock(writer),
+		zap.NewAtomicLevelAt(zap.DebugLevel),
+	)
+}
+
+func ProdFile(name string) (zapcore.Core, error) {
+	file, err := os.OpenFile(name, os.O_CREATE|os.O_APPEND, 0666)
+	if err != nil {
+		return nil, err
+	}
+	return Prod(file), err
+}
+
+func ConsoleAndFile(name string) *zap.Logger {
+	console := Setup()
+	file, err := ProdFile(name)
+	if err != nil {
+		zap.New(console, zap.AddStacktrace(zap.ErrorLevel)).Fatal("can't load logging file", zap.String("name", name))
+	}
+	return zap.New(zapcore.NewTee(console, file), zap.AddStacktrace(zap.ErrorLevel))
 }

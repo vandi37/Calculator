@@ -43,10 +43,10 @@ func Pre(expression string) (tree.Ast, error) {
 }
 
 type Calculator struct {
-	send func(float64, float64, tree.ExprSep) (chan float64, error)
+	send func(float64, float64, tree.ExprSep) (<-chan float64, error)
 }
 
-func New(send func(float64, float64, tree.ExprSep) (chan float64, error)) *Calculator {
+func New(send func(float64, float64, tree.ExprSep) (<-chan float64, error)) *Calculator {
 	return &Calculator{send}
 }
 
@@ -90,6 +90,6 @@ func (c *Calculator) Expression(expression tree.ExpressionType) (float64, error)
 	return <-getter, nil
 }
 
-func Calc(ast tree.Ast, send func(float64, float64, tree.ExprSep) (chan float64, error)) (float64, error) {
+func Calc(ast tree.Ast, send func(float64, float64, tree.ExprSep) (<-chan float64, error)) (float64, error) {
 	return New(send).Expression(ast.ExpressionType)
 }

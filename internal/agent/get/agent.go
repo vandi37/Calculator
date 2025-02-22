@@ -62,36 +62,36 @@ func Run(path string, maxErrors int, periodicity int, logger *zap.Logger) {
 			}
 			continue
 		}
-		task.Task(req.Task, sendBack)()
+		task.Task(req.Task, sendBack)
 		time.Sleep(time.Millisecond * time.Duration(periodicity))
 	}
 }
 
-func SendBack(path string, logger *zap.Logger) func(int, float64) {
-	return func(i int, f float64) {
+func SendBack(path string, logger *zap.Logger) func(int, float64, module.Request) {
+	return func(i int, f float64, r module.Request) {
 		buf := bytes.NewBuffer([]byte{})
 		err := json.NewEncoder(buf).Encode(module.Post{Id: i, Result: f})
 		if err != nil {
-			logger.Error("encoding failed", zap.Error(err))
+			logger.Error("encoding failed", zap.Int("id", i), zap.Error(err))
 			return
 		}
 		resp, err := http.Post(path, "application-json", buf)
 		if err != nil {
-			logger.Error("post request failed", zap.Error(err))
+			logger.Error("post request failed", zap.Int("id", i), zap.Error(err))
 			return
 		}
 
 		switch resp.StatusCode {
 		case http.StatusUnprocessableEntity:
-			logger.Error("got status 422 [unprocessable entity]")
+			logger.Error("got status 422 Unprocessable Entity", zap.Int("id", i))
 		case http.StatusBadRequest:
-			logger.Error("got status 400 [bad request]")
+			logger.Error("got status 400 Bad Request", zap.Int("id", i))
 		case http.StatusInternalServerError:
-			logger.Error("got status 500 [internal server error]")
+			logger.Error("got status 500 Internal Server Error", zap.Int("id", i))
 		case http.StatusOK:
-			logger.Debug("got status 200 [ok]")
+			logger.Debug("got status 200 OK", zap.Int("id", i), zap.String("task", r.String()), zap.Float64("result", f))
 		default:
-			logger.Warn(fmt.Sprintf("got unexpected status %d [%s]", resp.StatusCode, strings.TrimPrefix(resp.Status, strconv.Itoa(resp.StatusCode)+" ")))
+			logger.Warn(fmt.Sprintf("got unexpected status %d %s", resp.StatusCode, strings.TrimPrefix(resp.Status, strconv.Itoa(resp.StatusCode)+" ")), zap.Int("id", i))
 		}
 	}
 }

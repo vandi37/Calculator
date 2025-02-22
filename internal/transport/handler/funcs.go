@@ -23,7 +23,7 @@ func (h *Handler) CalcHandler(ctx *gin.Context) {
 		return
 	}
 
-	id := h.Waiter.Add()
+	id := h.Waiter.Add(req.Expression)
 	ast, err := calc.Pre(req.Expression)
 	if err != nil {
 		h.Waiter.Error(id, err)
@@ -81,7 +81,7 @@ func (h *Handler) FinishTask(ctx *gin.Context) {
 		return
 	}
 
-	if err := h.Waiter.GetResult(req.Id, req.Result); errors.Is(err, vanerrors.Simple(wait.StatusIsNotProcessing)) {
+	if err := h.Waiter.FinishJob(req.Id, req.Result); errors.Is(err, vanerrors.Simple(wait.StatusIsNotProcessing)) {
 		ctx.JSON(http.StatusUnprocessableEntity, resp.ResponseError{Error: err.Error()})
 		return
 	} else if err != nil {

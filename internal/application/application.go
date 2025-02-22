@@ -3,7 +3,9 @@ package application
 import (
 	"context"
 	"os"
+	"time"
 
+	"github.com/gin-gonic/gin"
 	"github.com/vandi37/Calculator/internal/agent/get"
 	"github.com/vandi37/Calculator/internal/config"
 	"github.com/vandi37/Calculator/internal/ms"
@@ -23,7 +25,8 @@ func New(config string) *Application {
 }
 
 func (a *Application) Run(ctx context.Context) {
-	logger := logger.Setup()
+	gin.SetMode(gin.ReleaseMode)
+	logger := logger.ConsoleAndFile("logs." + time.Now().Format("15'04.01-02") + ".log")
 
 	config, err := config.LoadConfig(a.config)
 	if err != nil {
@@ -33,13 +36,13 @@ func (a *Application) Run(ctx context.Context) {
 	// building agent
 	// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-	get.RunMultiple(config.ComputingPower, config.Path.Task, config.Port, config.MaxAgentErrors, config.AgentPeriodicityMs, logger)
+	get.RunMultiple(config.ComputingPower, config.Path.Task, config.Port.Api, config.MaxAgentErrors, config.AgentPeriodicityMs, logger)
 
 	// Server
 	// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	handler := handler.NewHandler(config.Path, wait.New(ms.From(*config), logger))
+	handler := handler.NewHandler(config.Path, wait.New(ms.From(*config), logger), logger)
 
-	server := server.New(handler, config.Port)
+	server := server.New(handler, config.Port.Api)
 
 	go func() {
 		if err := server.Run(); err != nil {

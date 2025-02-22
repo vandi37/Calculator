@@ -1,15 +1,18 @@
 {
-    "port": 3701,
+    "port" : {
+        "api": 3701,
+        "vue": 3037
+    },
     "path": {
         "calc": "/api/v1/calculate",
         "get": "/api/v1/expressions",
         "task": "/internal/task"
     },
-    "time_addition_ms": 100,
-    "time_subtraction_ms": 200,
-    "time_multiplication_ms": 400,
-    "time_division_ms": 800,
-    "computing_power": 2,
+    "time_addition_ms": 1000,
+    "time_subtraction_ms": 2000,
+    "time_multiplication_ms": 4000,
+    "time_division_ms": 8000,
+    "computing_power": 5,
     "max_agent_errors": 10,
-    "agent_periodicity": 10000
+    "agent_periodicity": 1000
 }
