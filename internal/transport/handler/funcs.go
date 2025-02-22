@@ -24,6 +24,7 @@ func (h *Handler) CalcHandler(ctx *gin.Context) {
 	}
 
 	id := h.Waiter.Add(req.Expression)
+
 	ast, err := calc.Pre(req.Expression)
 	if err != nil {
 		h.Waiter.Error(id, err)

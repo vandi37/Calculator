@@ -54,3 +54,6 @@ coverage
 *.sw?
 
 *.tsbuildinfo
+
+# pic 
+*.dio.*

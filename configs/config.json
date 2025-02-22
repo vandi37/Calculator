@@ -9,9 +9,9 @@
         "task": "/internal/task"
     },
     "time_addition_ms": 1000,
-    "time_subtraction_ms": 2000,
-    "time_multiplication_ms": 4000,
-    "time_division_ms": 8000,
+    "time_subtraction_ms": 1000,
+    "time_multiplication_ms": 1000,
+    "time_division_ms": 1000,
     "computing_power": 5,
     "max_agent_errors": 10,
     "agent_periodicity": 1000

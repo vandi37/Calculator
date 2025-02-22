@@ -2,6 +2,6 @@ package wait
 
 const (
 	IdNotFound         = "id not found"
-	StatusIsNotNothing = "status is not <nothing>"
-	StatusIsNotProcessing= "status is not <processing>"
+	StatusIsNotNothing = "status is not Nothing"
+	StatusIsNotProcessing= "status is not Processing"
 )
