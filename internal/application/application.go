@@ -1,48 +1,58 @@
 package application
 
 import (
-	"os"
+	"context"
+	"time"
 
-	"github.com/vandi37/Calculator/config"
-	"github.com/vandi37/Calculator/internal/http/handler"
-	"github.com/vandi37/Calculator/internal/http/server"
-	"github.com/vandi37/Calculator/pkg/calc_service"
+	"github.com/vandi37/Calculator/internal/agent/get"
+	"github.com/vandi37/Calculator/internal/config"
+	"github.com/vandi37/Calculator/internal/ms"
+	"github.com/vandi37/Calculator/internal/transport/handler"
+	"github.com/vandi37/Calculator/internal/transport/server"
+	"github.com/vandi37/Calculator/internal/wait"
 	"github.com/vandi37/Calculator/pkg/logger"
+	"go.uber.org/zap"
+)
+
+var (
+	STD_CONFIG      = "configs/config.json"
+	LOG_SERVER_FILE = "logs.server." + time.Now().Format("15'04.01-02") + ".log"
+	LOG_AGENT_FILE  = "logs.agent." + time.Now().Format("15'04.01-02") + ".log"
+	LOG_FILE        = "logs." + time.Now().Format("15'04.01-02") + ".log"
 )
 
 type Application struct {
-	config string
+	config config.Config
+	logger *zap.Logger
 }
 
-func New(config string) *Application {
-	return &Application{config}
+func New(path string, logPath string) *Application {
+	logger := logger.ConsoleAndFile(logPath)
+	config, err := config.LoadConfig(path)
+	if err != nil {
+		logger.Fatal("error loading config", zap.Error(err))
+	}
+	return &Application{*config, logger}
 }
 
-func (a *Application) Run() {
-	// Creating logger
-	logger := logger.New(os.Stderr)
+func (a *Application) RunAgent(ctx context.Context) {
+	get.RunMultiple(ctx, a.config.ComputingPower, a.config.Path.Task, a.config.Port.Api, a.config.MaxAgentErrors, a.config.AgentPeriodicityMs, a.logger)
+	a.logger.Info("agent finish")
+}
 
-	// Loading config
-	config, err := config.LoadConfig(a.config)
-	if err != nil {
-		logger.Fatalln(err)
-	}
+func (a *Application) Run(ctx context.Context) {
 
-	// Crating calc service
-	service := calc_service.New(logger)
-	// Adding logging
-	service.DoLog = config.DoLog
+	handler := handler.NewHandler(a.config.Path, wait.New(ms.From(a.config), a.logger), a.logger)
 
-	// Creating handler
-	handler := handler.NewHandler(config.Path, service)
+	server := server.New(handler, a.config.Port.Api)
 
-	// Creating server
-	server := server.New(handler, config.Port)
+	go func() {
+		if err := server.Run(a.logger); err != nil {
+			a.logger.Fatal("error running server", zap.Error(err))
+		}
+	}()
 
-	// Running server
-	err = server.Run()
-	if err != nil {
-		logger.Fatalln(err)
-	}
-	// The program end
+	<-ctx.Done()
+	server.Close()
+	a.logger.Info("server finish")
 }
