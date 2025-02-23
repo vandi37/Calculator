@@ -74,13 +74,3 @@ func (n Num) expression() {}
 func (n Num) String() string {
 	return fmt.Sprint(float64(n))
 }
-
-type UnaryMinus struct {
-	E ExpressionType
-}
-
-func (u UnaryMinus) expression() {}
-
-func (u UnaryMinus) String() string {
-	return fmt.Sprintf("- (%s)", u.E.String())
-}

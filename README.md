@@ -79,7 +79,7 @@ Let say we have an expression "2+2*2".
 
 `client` -> POST "2+2\*2" (HTTP) -> `server` -> "2+2\*2" -> `waiter` -> *id* -> `server` -> "2+2\*2" -> **lexer** -> ["2", "+", "2", "\*", "2"] -> **parser** -> 2 + (2, "\*", 2) -> **runner** -> (2, "\*", 2) -> `waiter` -> (*id*, 2, "\*", 2, *time*).
 
-`agent` -> GET (HTTP) -> `server` -> (*id*, "2", "\*", "2", *time*) (HTTP) -> `agent` -> POST (*id*, 4) (HTTP) -> `server` -> (*id*, 4) -> `waiter` -> 4 **runner** -> (2, "+", 4) -> `waiter` -> (*id*, 2, "+", 4, *time*).
+`agent` -> GET (HTTP) -> `server` -> (*id*, "2", "\*", "2", *time*) (HTTP) -> `agent` -> POST (*id*, 4) (HTTP) -> `server` -> (*id*, 4) -> `waiter` -> 4 -> **runner** -> (2, "+", 4) -> `waiter` -> (*id*, 2, "+", 4, *time*).
 
 `agent` -> GET (HTTP) -> `server` -> (*id*, "2", "+", "4", *time*) (HTTP) -> `agent` -> POST (*id*, 6) (HTTP) -> `server` -> (*id*, 6) -> `waiter` -> 6 **runner** -> 6 -> `waiter`.
 
@@ -222,7 +222,7 @@ curl --location 'localhost:3701/api/v1/expressions/-1'
 
 Result: `404 {"error": "invalid id"}` 
 
-1. Getting task
+3. Getting task
 
 ```shell
 curl --location 'localhost:3701/internal/task'
@@ -232,7 +232,7 @@ curl --location 'localhost:3701/internal/task'
 
 Result: `404 {"error": "no jobs found"}` 
 
-1. Sending task
+4. Sending task
 
 ```shell
 curl --location 'localhost:3701/internal/task' \
@@ -482,4 +482,378 @@ C:.
 
 11. [tests](tests/). Tests for the program
 
-Maybe i will write more...
+### Agent logic.
+
+Let's talk about how the agent works.
+
+At first there are many agents working at the same time. It allows to make long tasks parallel. 
+
+[agent code](internal/agent/get/agent.go)
+
+```go
+func RunMultiple(ctx context.Context, num int, ...) {
+	path = ...
+	for i := 0; i < num; i++ {
+        // creating n agents
+		go Run(ctx, ...)
+	}
+	<-ctx.Done()
+}
+```
+
+sending messages back.
+
+```go
+sendBack := func(i int, f float64, r module.Request) {
+		buf := bytes.NewBuffer([]byte{})
+		// encoding result
+        // ...
+
+		resp, err := client.Post(path, "application-json", buf)
+		// error handling
+
+
+		switch resp.StatusCode {
+            // logging the result.
+		}
+	}
+```
+
+getting tasks
+
+```go
+got, err := client.Get(path)
+if err != nil {
+// error handling
+
+// Checking that the job found
+if got.StatusCode == http.StatusNotFound {
+    time.Sleep(time.Millisecond * time.Duration(periodicity))
+    continue
+}
+
+if got.StatusCode != http.StatusOK {
+    // error handling if status isn't ok
+}
+
+defer got.Body.Close()
+
+req := new(struct {
+    Task module.Request `json:"task"`
+})
+err = json.NewDecoder(got.Body).Decode(req)
+// error handling if status isn't ok
+
+task.Task(req.Task, sendBack) // doing task
+time.Sleep(time.Millisecond * time.Duration(periodicity))
+```
+
+### Waiter logic 
+
+[waiter](internal/wait/wait.go)
+
+adding a process
+
+```go
+func (w *Waiter) Add(expression string) int {
+	// mutex
+
+	id := // getting last id
+
+	w.processes[id] = status.New(
+        status.Nothing, 
+        status.NothingValue{}, 
+        expression,
+    ) // adding new process
+	
+	return id
+}
+```
+
+start waiting
+
+```go
+func (w *Waiter) StartWaiting(id int, arg1, arg2 float64, operation tree.ExprSep) (<-chan float64, error) {
+	// mutex
+
+	s, ok := w.processes[id] // getting process
+	// error handling
+
+	if s.Level != status.Nothing {
+		// if status is wrong
+	    // error handling
+        return ...
+	}
+
+	back := make(chan float64) // chanel for sending result back.
+
+	w.processes[id] = status.New(
+        status.Waiting, 
+        status.WaitingValue{
+		    Request: module.Request{
+			    // Creating request
+		    },
+		    Back: back,
+	    }, 
+        s.Expression,
+    ) // editing process status
+
+	w.waiting = append(w.waiting, id) // adding id to waiting so it is faster to find a task
+	
+
+	return back, nil
+}
+```
+
+getting a job
+
+```go
+func (w *Waiter) GetJob() (any, bool) {
+	// mutex
+
+	if len(w.waiting) <= 0 {
+		// if there are no jobs
+	    // error handling
+        return ...
+	}
+
+	id := w.waiting[0] // getting first job in the queue
+	s, ok := w.processes[id] // getting the real job
+	if !ok || s.Level != status.Waiting {
+        // if the job does not exist or it has wrong status
+		// error handling
+        return ...
+	}
+	w.waiting = w.waiting[1:] // removing the job
+
+	w.processes[id] = status.New(
+        status.Processing, 
+        status.ProcessingValue{
+            Request: *s.Value.GerRequest(), 
+            Back: s.Value.GetBack()
+        },
+        s.Expression,
+    ) // editing status
+
+	return s.Value.ForJson(), true
+}
+```
+
+finishing a job
+
+```go
+func (w *Waiter) FinishJob(id int, result float64) error {
+	// mutex
+
+	s, ok := w.processes[id] // getting process
+	if !ok {
+		// if id is invalid
+	    // error handling
+        return ...
+	}
+
+	if s.Level != status.Processing {
+		// if status is wrong
+	    // error handling
+        return ...
+	}
+
+	s.Value.GetBack() <- result // sending result
+    close(s.Value.GetBack()) // closing chanel
+
+	w.processes[id] = status.New(
+        status.Nothing, 
+        status.NothingValue{}, 
+        s.Expression,
+    ) // editing status
+
+	return nil
+}
+```
+
+finish a process
+
+```go
+func (w *Waiter) Finish(id int, result float64) error {
+	// mutex
+
+	s, ok := w.processes[id] // getting process
+	if !ok {
+		// if id is invalid
+	    // error handling
+        return ...
+	}
+
+	if s.Level != status.Nothing {
+		// if status is wrong
+	    // error handling
+        return ...
+	}
+
+	w.processes[id] = status.New(
+        status.Finished, 
+        status.FinishedValue(result), 
+        s.Expression,
+    ) // Changing status
+	
+	return nil
+}
+```
+
+Blocking process with an error
+
+```go
+func (w *Waiter) Error(id int, err error) error {
+	// mutex
+
+	s, ok := w.processes[id] // getting process
+	if !ok {
+		// if id is invalid
+	    // error handling
+        return ...
+	}
+
+	switch s.Level {
+	case status.Waiting, status.Processing:
+		close(s.Value.GetBack()) // closing chanel
+	}
+
+	w.processes[id] = status.New(
+        status.Error, 
+        status.ErrorValue{Error: err}, 
+        s.Expression,
+    ) // changing status
+	
+	return nil
+}
+```
+
+getting
+
+```go
+func (w *Waiter) GetAll() []any {
+	all := []any{} // all values
+
+    // making ids in order
+	keys := maps.Keys(w.processes)
+	slices.Sort(keys) 
+
+	for _, key := range keys {
+		all = append(all, w.Get(key)) // adding processes
+	}
+
+	return all
+}
+
+func (w *Waiter) Exist(id int) bool {
+	_, ok := w.processes[id] // Checking the existence
+	return ok
+}
+
+func (w *Waiter) Get(id int) any {
+	s, ok := w.processes[id] // getting the process
+	if !ok {
+		return nil
+	}
+
+	return s.ForJson(id) // format a process to json.
+}
+```
+
+### Calculator logic
+
+[calculator](pkg/calc/calc.go)
+
+Building ast
+
+```go
+func Pre(expression string) (tree.Ast, error) {
+    // trimming spaces.
+	expression = strings.Replace(expression, " ", "", -1) 
+
+    // getting tokens
+	lexer := lexer.New([]rune(expression)) 
+	tokens, err := lexer.GetTokens()
+	if err != nil {
+		return tree.Ast{}, err
+	}
+
+    // parsing
+	parser := parser.New(tokens)
+	return parser.Ast()
+}
+```
+
+calculating
+
+```go
+func Calc(
+    ast tree.Ast, 
+    send func(
+        float64, 
+        float64, 
+        tree.ExprSep
+    ) (<-chan float64, error)) 
+    (float64, error) 
+{
+    // creating a new calculator and running the heights expression
+	return New(send).Expression(ast.ExpressionType)
+}
+```
+
+running expressions
+
+```go
+func (c *Calculator) Expression(expression tree.ExpressionType) (float64, error) {
+	if expression == nil {
+		// checking expression
+        return ...
+	}
+
+    // If expression is a number it just returns it
+	n, ok := expression.(tree.Num)
+	if ok {
+		return float64(n), nil 
+	}
+
+	b, ok := expression.(tree.Expression)
+	if !ok {
+		// it is an unknown kind of expression
+        return ...
+	}
+
+    // getting left expression
+	left, err := c.Expression(b.Left)
+	// error handling
+
+	right, err := c.Expression(b.Right)
+	// error handling
+
+
+	if right == 0 && b.Sep == tree.Division {
+		// Checking division by zero
+        return ...
+	}
+
+    // Sending the expression/
+	getter, err := c.send(left, right, b.Sep)
+	// error handling
+
+    // Getting a result
+	return <-getter, nil
+}
+```
+
+### Other
+
+I thing that you don't need information how my lexer/parser works. The handler just uses the waiter, so there is nothing interesting.
+
+## FAQ
+
+- Where is the unary minus? Does it work? 
+
+    > Yes it works. It is represented as 0 - **expression**
+
+- Is something like `5`, `-10` and so on an expression
+
+    > Yes! It is because My as tree node can be a binary expression or a number, so 5 it is just a tree with one node.

@@ -104,6 +104,7 @@ func (w *Waiter) FinishJob(id int, result float64) error {
 		return vanerrors.New(StatusIsNotProcessing, s.Level.String())
 	}
 	s.Value.GetBack() <- result
+	close(s.Value.GetBack())
 
 	w.processes[id] = status.New(status.Nothing, status.NothingValue{}, s.Expression)
 	w.logger.Debug("process got result", zap.Int("id", id), zap.String("expression", s.Expression), zap.String("task", s.Value.String()), zap.Float64("result", result))

@@ -67,11 +67,11 @@ func (p *Parser) PrimExpression() (tree.ExpressionType, error) {
 	case tokens.Number:
 		return tree.Num(t.Value), nil
 	case tokens.Subtraction:
-		f, err := p.PrimExpression()
+		right, err := p.PrimExpression()
 		if err != nil {
 			return nil, err
 		}
-		return tree.UnaryMinus{E: f}, nil
+		return tree.Expression{Left: tree.Num(0), Sep: tree.Subtraction, Right: right}, nil
 	case tokens.BracketOpen:
 		expr, err := p.Expression(binding.Lowest)
 		if err != nil {

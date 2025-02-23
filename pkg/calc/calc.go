@@ -58,11 +58,6 @@ func (c *Calculator) Expression(expression tree.ExpressionType) (float64, error)
 	if ok {
 		return float64(n), nil
 	}
-	u, ok := expression.(tree.UnaryMinus)
-	if ok {
-		f, err := c.Expression(u.E)
-		return -f, err
-	}
 
 	b, ok := expression.(tree.Expression)
 	if !ok {
