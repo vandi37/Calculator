@@ -17,8 +17,6 @@ The calculator splits the expression into mini tasks and does them outside the m
 
 ## Installation and running
 
-Now, when you know a bit about how it should work and what it is lets talk about installation and running the project.
-
 For the project you need to have installed
 
 1. [git](https://git-scm.com/)
