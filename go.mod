@@ -3,8 +3,12 @@ module github.com/vandi37/Calculator
 go 1.23.0
 
 require (
+	github.com/gin-gonic/gin v1.10.0
+	github.com/goloop/env v1.2.1
 	github.com/vandi37/vanerrors v1.0.0
 	go.uber.org/zap v1.27.0
+	golang.org/x/exp v0.0.0-20250218142911-aa4b98e5adaa
+	golang.org/x/net v0.25.0
 )
 
 require (
@@ -14,7 +18,6 @@ require (
 	github.com/cloudwego/iasm v0.2.0 // indirect
 	github.com/gabriel-vasile/mimetype v1.4.3 // indirect
 	github.com/gin-contrib/sse v0.1.0 // indirect
-	github.com/gin-gonic/gin v1.10.0 // indirect
 	github.com/go-playground/locales v0.14.1 // indirect
 	github.com/go-playground/universal-translator v0.18.1 // indirect
 	github.com/go-playground/validator/v10 v10.20.0 // indirect
@@ -29,16 +32,13 @@ require (
 	github.com/stretchr/testify v1.10.0 // indirect
 	github.com/twitchyliquid64/golang-asm v0.15.1 // indirect
 	github.com/ugorji/go/codec v1.2.12 // indirect
+	github.com/vandi37/flags v0.1.1
+	go.uber.org/multierr v1.10.0 // indirect
 	golang.org/x/arch v0.8.0 // indirect
 	golang.org/x/crypto v0.23.0 // indirect
-	golang.org/x/net v0.25.0 // indirect
+	golang.org/x/sync v0.11.0 // indirect
 	golang.org/x/sys v0.20.0 // indirect
 	golang.org/x/text v0.15.0 // indirect
 	google.golang.org/protobuf v1.34.1 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
-)
-
-require (
-	go.uber.org/multierr v1.10.0 // indirect
-	golang.org/x/exp v0.0.0-20250218142911-aa4b98e5adaa
 )

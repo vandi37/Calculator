@@ -4,6 +4,9 @@
 
 Hi! I'm Vandi, the author of this project! 
 
+You can contact me 
+
+
 ### What is it? 
 
 This project is a calculator on golang that uses concurrency.
@@ -121,7 +124,7 @@ Server("Server") <--> Waiter
 	```mermaid
 	graph LR
 
- 	Server("Server") --> |"Expressiom"| Waiter("Waiter") --> |"Id"| Server
+ 	Server("Server") --> |"Expression"| Waiter("Waiter") --> |"Id"| Server
 		
 	```
     2. Switch status to waiting
@@ -348,35 +351,6 @@ cd ..
 
 Now the project is ready for running
 
-### Configuration
-
-If you want you can change the [config](configs/config.json)
-
-```json
-{
-    "port" : {
-        "api": 3701, // port for your api
-        "vue": 3037 // port for vue.js
-    },
-    "path": {
-        "calc": "/api/v1/calculate", // path for sending expressions
-        "get": "/api/v1/expressions", // path for getting all expressions / getting expression by id
-        "task": "/internal/task" // path to get task/send result of task
-    },
-    "time_addition_ms": 1000, // the time that the agent takes to calculate addition operations in milliseconds
-    "time_subtraction_ms": 1000, // the time that the agent takes to calculate subtraction  operations in milliseconds
-    "time_multiplication_ms": 1000, // the time that the agent takes to calculate multiplication  operations in milliseconds
-    "time_division_ms": 1000, // the time that the agent takes to calculate division  operations in milliseconds
-    "computing_power": 2, // the number of agents that are running at the same time
-    "max_agent_errors": 10, // the number of errors that the agent should have to crash. 
-    "agent_periodicity": 1000 // how often the agent will ask for a task in milliseconds
-}
-```
-
-All data in the config could be edited, it won't affect the program
-
-...Yes i know that the task was to make it in the env, however json configs are much easer for me, especially when there is many data
-
 ### Running backend
 
 Backend splits into two parts
@@ -399,8 +373,27 @@ or in one process
 go run cmd/group/main.go
 ```
 
+### Configuration
+
+So there is two ways to configure the program
+
+1. [env](.env)
+2. [json](configs/config.json)
+
+Chose a method you like and change config values.
+
+Don't forget to use config type in the program
+
+```shell
+go run cmd/... --env 
+go run cmd/... --json
+```
+
+It will work in all backend running methods
 
 ### Running frontend
+
+frontend is configured [here](configs/vue_config.json). Env isn't working in frontend...
 
 ```shell
 cd frontend
@@ -552,12 +545,12 @@ Result: `200`
 ### Tree
 
 ```
-C:.
+│   .env
 │   .gitignore
 │   go.mod
 │   go.sum
 │   license
-│   readme.md
+│   README.md
 │
 ├───cmd
 │   ├───agent
@@ -571,6 +564,7 @@ C:.
 │
 ├───configs
 │       config.json
+│       vue_config.json
 │
 ├───frontend
 │   │   .editorconfig
@@ -597,9 +591,6 @@ C:.
 │       │
 │       └───components
 │               HomePage.vue
-│
-├───img
-│       project.svg
 │
 ├───internal
 │   ├───agent
@@ -1082,3 +1073,9 @@ I thing that you don't need information how my lexer/parser works. The handler j
 - Is something like `5`, `-10` and so on an expression
 
     > Yes! It is because My as tree node can be a binary expression or a number, so 5 it is just a tree with one node.
+
+- Why i haven't used docker-compose?
+
+	> Because i think running 1-3 terminals isn't a problem
+	> 
+	> I don't have a database or something. my env 

@@ -12,12 +12,12 @@ type MsGetter struct {
 	TimeDivisionMs       int
 }
 
-func From(c config.Config) *MsGetter {
+func From(t config.Time) *MsGetter {
 	return &MsGetter{
-		TimeAdditionMs:       c.TimeAdditionMs,
-		TimeSubtractionMs:    c.TimeSubtractionMs,
-		TimeMultiplicationMs: c.TimeMultiplicationMs,
-		TimeDivisionMs:       c.TimeDivisionMs,
+		TimeAdditionMs:       t.AdditionMs,
+		TimeSubtractionMs:    t.SubtractionMs,
+		TimeMultiplicationMs: t.MultiplicationMs,
+		TimeDivisionMs:       t.DivisionMs,
 	}
 }
 
