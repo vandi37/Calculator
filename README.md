@@ -4,7 +4,7 @@
 
 Hi! I'm Vandi, the author of this project! 
 
-You can contact me 
+You can contact me in [telegram](http://t.me/vandi37) or [write an e-mail](mailto:lev-person11@yandex.ru)
 
 
 ### What is it? 
@@ -15,7 +15,89 @@ This project is a calculator on golang that uses concurrency.
 
 The calculator splits the expression into mini tasks and does them outside the main logic.
 
-### Project structure. 
+## Installation and running.
+
+Now, when you know a bit about how it should work and what it is lets talk about installation and running the project.
+
+For the project you need to have installed
+
+1. [git](https://git-scm.com/)
+2. [go](https://go.dev/)
+3. [node.js & npm](https://nodejs.org/)
+
+### Installing.
+
+1. Download the source code
+
+```shell
+git clone https://github.com/vandi37/Calculator.git
+cd Calculator
+```
+
+2. Install dependencies
+
+```shell
+go mod tidy
+cd frontend
+npm install
+cd ..
+```
+
+Now the project is ready for running
+
+### Running backend
+
+Backend splits into two parts
+1. server
+2. agent
+
+You can run them separately 
+
+```shell
+go run cmd/server/main.go
+```
+
+```shell
+go run cmd/agent/main.go
+```
+
+or in one process
+
+```shell
+go run cmd/group/main.go
+```
+
+### Configuration
+
+So there is two ways to configure the program
+
+1. [env](.env)
+2. [json](configs/config.json)
+
+Chose a method you like and change config values.
+
+Don't forget to use config type in the program
+
+```shell
+go run cmd/... --env 
+go run cmd/... --json
+```
+
+It will work in all backend running methods
+
+### Running frontend
+
+frontend is configured [here](configs/vue_config.json). Env isn't working in frontend...
+
+```shell
+cd frontend
+npm run dev
+```
+
+After running frontend it will give you a link to the website where the server is.
+
+
+## Project structure. 
 
 ```mermaid
 graph LR
@@ -33,7 +115,7 @@ Waiter[/"Waiter"\] <--> Orchestrator
 Server("Server") <--> Waiter
 ```
 
-1. Server
+### Server
 
     The Center of the project. It gets requests and responses on them.
 
@@ -90,7 +172,7 @@ Server("Server") <--> Waiter
 	Server -----> |"Response"| Client
 	```
 
-3. Orchestrator
+### Orchestrator
 
     It is made from 3 parts
 
@@ -114,13 +196,14 @@ Server("Server") <--> Waiter
   	
 	```
  
-4. Waiter
+### Waiter
 
     It is a program that controls all the expressions and it statuses
 
     It has this abilities
 
     1. Add new process (expression)
+   
 	```mermaid
 	graph LR
 
@@ -180,11 +263,11 @@ Server("Server") <--> Waiter
   	```mermaid
 	graph LR
 
-   	Server("Server") --> |"Id"| Waiter("Waiter") --> |"Status"| Server
+	Server("Server") --> |"Id"| Waiter("Waiter") --> |"Status"| Server
 
    	```
 
-5. Agent
+### Agent
 
     Gets tasks and does it
 	
@@ -199,7 +282,7 @@ Server("Server") <--> Waiter
 
     There can work many agents at one time
 
-7. Frontend on [Vue.js](https://vuejs.org/)
+### Frontend on [Vue.js](https://vuejs.org/)
 
     It has one page.
 
@@ -319,88 +402,7 @@ After the agent gets the task from the server and calculates it. It sends the se
 
 Once more the agent receives a task, calculates it and sends back. The result goes through the server, waiter to the runner. The runner realizes that everything is calculated so it gives the result to the waiter.
 
-The client sends a request to the server which asks the waiter about the status of clients expression and gives the status to the client.
-
-## Installation and running.
-
-Now, when you know a bit about how it should work and what it is lets talk about installation and running the project.
-
-For the project you need to have installed
-
-1. [git](https://git-scm.com/)
-2. [go](https://go.dev/)
-3. [node.js & npm](https://nodejs.org/)
-
-### Installing.
-
-1. Download the source code
-
-```shell
-git clone https://github.com/vandi37/Calculator.git
-cd Calculator
-```
-
-2. Install dependencies
-
-```shell
-go mod tidy
-cd frontend
-npm install
-cd ..
-```
-
-Now the project is ready for running
-
-### Running backend
-
-Backend splits into two parts
-1. server
-2. agent
-
-You can run them separately 
-
-```shell
-go run cmd/server/main.go
-```
-
-```shell
-go run cmd/agent/main.go
-```
-
-or in one process
-
-```shell
-go run cmd/group/main.go
-```
-
-### Configuration
-
-So there is two ways to configure the program
-
-1. [env](.env)
-2. [json](configs/config.json)
-
-Chose a method you like and change config values.
-
-Don't forget to use config type in the program
-
-```shell
-go run cmd/... --env 
-go run cmd/... --json
-```
-
-It will work in all backend running methods
-
-### Running frontend
-
-frontend is configured [here](configs/vue_config.json). Env isn't working in frontend...
-
-```shell
-cd frontend
-npm run dev
-```
-
-After running frontend it will give you a link to the website where the server is. 
+The client sends a request to the server which asks the waiter about the status of clients expression and gives the status to the client. 
 
 ## Examples.
 
