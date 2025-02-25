@@ -117,155 +117,155 @@ Server("Server") <--> Waiter
 
 ### Server
 
-    The Center of the project. It gets requests and responses on them.
+The Center of the project. It gets requests and responses on them.
 
-    It calls the `waiter` and `orchestrator` to do operations.
+It calls the `waiter` and `orchestrator` to do operations.
 
-    Endpoints
+Endpoints
 
-    1. /api/v1/calculate - send a new expression
+1. /api/v1/calculate - send a new expression
 
 	```mermaid
 	graph LR
-
+	
 	Client[["Client"]] -----> |"POST Request (Expression)"| Server("Server")
-
- 	Server -----> |"Response (Id)"| Client
-
+	
+	Server -----> |"Response (Id)"| Client
+	
 	```
 
-    2. /api/v1/expressions - get all expressions
+2. /api/v1/expressions - get all expressions
        
-	```mermaid
-	graph LR
+```mermaid
+graph LR
 
-	Client[["Client"]] -----> |"GET Request"| Server("Server")
+Client[["Client"]] -----> |"GET Request"| Server("Server")
 
-	Server -----> |"Response (Array of status)"| Client
-	```
+Server -----> |"Response (Array of status)"| Client
+```
  
-    3. /api/v1/expressions/:id - get expression by id
+3. /api/v1/expressions/:id - get expression by id
   
-	```mermaid
-	graph LR
+```mermaid
+graph LR
 
- 	Client[["Client"]] -----> |"GET Request (Id)"| Server("Server")
+Client[["Client"]] -----> |"GET Request (Id)"| Server("Server")
 
- 	Server -----> |"Response (Status)"| Client
-	```
+Server -----> |"Response (Status)"| Client
+```
  	
-    5. /internal/task - receive a task/send a result of a task
+5. /internal/task - receive a task/send a result of a task
 
-	```mermaid
-	graph LR
-	
-	Client[["Client"]] -----> |"GET Request"| Server("Server")
-	
-	Server -----> |"Response (Task)"| Client
-	```
+```mermaid
+graph LR
 
-	 ```mermaid
-	graph LR
-	
-	Client[["Client"]] -----> |"POST Request (Task result)"| Server("Server")
-	
-	Server -----> |"Response"| Client
-	```
+Client[["Client"]] -----> |"GET Request"| Server("Server")
+
+Server -----> |"Response (Task)"| Client
+```
+
+ ```mermaid
+graph LR
+
+Client[["Client"]] -----> |"POST Request (Task result)"| Server("Server")
+
+Server -----> |"Response"| Client
+```
 
 ### Orchestrator
 
-    It is made from 3 parts
+It is made from 3 parts
 
-    1. Lexer : Creates tokens from text
-    2. Parser : Parses the tokens into a tree.
-    3. Runner : Runs goes through the tree and sends tasks to the `waiter`
+1. Lexer : Creates tokens from text
+2. Parser : Parses the tokens into a tree.
+3. Runner : Runs goes through the tree and sends tasks to the `waiter`
 
-	 ```mermaid
-	graph LR
+ ```mermaid
+graph LR
 
- 	Server("Server") --> |"Expression"| Lexer("Lexer") --> |"Tokens"| Parser(["Parser"]) --> |"Ast"| Runner;
+Server("Server") --> |"Expression"| Lexer("Lexer") --> |"Tokens"| Parser(["Parser"]) --> |"Ast"| Runner;
 
-  	Runner <-.-> |"Task 1"| Waiter("Waiter")
-  	Runner  <-.->|"Task 2"| Waiter
-  	Runner  <-.->|"Task 3"| Waiter 
-  	Runner <-.-> |"..."| Waiter
-  	Runner <-.-> |"Task N"| Waiter
+Runner <-.-> |"Task 1"| Waiter("Waiter")
+Runner  <-.->|"Task 2"| Waiter
+Runner  <-.->|"Task 3"| Waiter 
+Runner <-.-> |"..."| Waiter
+Runner <-.-> |"Task N"| Waiter
 
-  	Runner ==> |"Result"| Server
-	
-  	
-	```
+Runner ==> |"Result"| Server
+
+
+```
  
 ### Waiter
 
-    It is a program that controls all the expressions and it statuses
+It is a program that controls all the expressions and it statuses
 
-    It has this abilities
+It has this abilities
 
-    1. Add new process (expression)
-   
-	```mermaid
-	graph LR
+1. Add new process (expression)
 
- 	Server("Server") --> |"Expression"| Waiter("Waiter") --> |"Id"| Server
-		
-	```
-    2. Switch status to waiting
-   	```mermaid
-	graph LR
+```mermaid
+graph LR
 
-	Runner --> |"Task"| Waiter("Waiter") --> |"Chanel"| Runner
-		
-	```
-    3. Give a job
+Server("Server") --> |"Expression"| Waiter("Waiter") --> |"Id"| Server
+	
+```
+2. Switch status to waiting
+```mermaid
+graph LR
 
-  	```mermaid
-	graph LR
+Runner --> |"Task"| Waiter("Waiter") --> |"Chanel"| Runner
+	
+```
+3. Give a job
 
-   	Server("Server") -- "Get task" --> Waiter("Waiter") --> |"Task + Id + Time"| Server
+```mermaid
+graph LR
 
-   	```
-   	
-    4. Receive a job result (*id*, *result*) -> `waiter`
-  
-   	```mermaid
-	graph LR
+Server("Server") -- "Get task" --> Waiter("Waiter") --> |"Task + Id + Time"| Server
 
-   	Server("Server") --> |"Id + Result"| Waiter("Waiter")
+```
 
-   	```
-    5. Finish a job
-  
-   	```mermaid
-	graph LR
+4. Receive a job result (*id*, *result*) -> `waiter`
 
-   	Runner --> |"Result"| Server("Server") --> |"Id + Result"| Waiter("Waiter")
+```mermaid
+graph LR
 
-   	```
-    6. Block a job with an error
-  
-   	```mermaid
-	graph LR
+Server("Server") --> |"Id + Result"| Waiter("Waiter")
 
-   	Runner --> |"Error"| Server("Server") --> |"Id + Error"| Waiter("Waiter")
+```
+5. Finish a job
 
-   	```
-    7. Send all processes (expressions)
+```mermaid
+graph LR
 
-   	```mermaid
-	graph LR
+Runner --> |"Result"| Server("Server") --> |"Id + Result"| Waiter("Waiter")
 
-   	Server("Server") -- "Get all" --> Waiter("Waiter") --> |"Array of status"| Server
+```
+6. Block a job with an error
 
-   	```
-    8. Send a certain process (expression) *id* -> `waiter` -> *status*
-  
-  	```mermaid
-	graph LR
+```mermaid
+graph LR
 
-	Server("Server") --> |"Id"| Waiter("Waiter") --> |"Status"| Server
+Runner --> |"Error"| Server("Server") --> |"Id + Error"| Waiter("Waiter")
 
-   	```
+```
+7. Send all processes (expressions)
+
+```mermaid
+graph LR
+
+Server("Server") -- "Get all" --> Waiter("Waiter") --> |"Array of status"| Server
+
+```
+8. Send a certain process (expression) *id* -> `waiter` -> *status*
+
+```mermaid
+graph LR
+
+Server("Server") --> |"Id"| Waiter("Waiter") --> |"Status"| Server
+
+```
 
 ### Agent
 
@@ -284,26 +284,26 @@ Server("Server") <--> Waiter
 
 ### Frontend on [Vue.js](https://vuejs.org/)
 
-    It has one page.
+It has one page.
 
-    1. Send expression
-  
-   ```mermaid
-	graph LR
+1. Send expression
 
-   	Client(["Client"]) --> |"POST HTTP Expression"| Server("Server")
+```mermaid
+graph LR
 
-	Server --> |"HTTP Id"| Client
-   ```
-    3. View expression history
-  
-   ```mermaid
-	graph LR
+Client(["Client"]) --> |"POST HTTP Expression"| Server("Server")
 
-   	Client(["Client"]) --> |"GET HTTP"| Server("Server")
+Server --> |"HTTP Id"| Client
+```
+3. View expression history
 
-	Server --> |"HTTP Array of status"| Client
-   ```
+```mermaid
+graph LR
+
+Client(["Client"]) --> |"GET HTTP"| Server("Server")
+
+Server --> |"HTTP Array of status"| Client
+```
 
 ### Example
 
