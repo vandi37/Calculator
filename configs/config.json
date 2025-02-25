@@ -1,8 +1,17 @@
-{"port":3701,"path":{"calc":"/api/v1/calculate","get":"/api/v1/expressions","task":"/internal/task"},"time":{"addition_ms":1000,"subtraction_ms":2000,"multiplication_ms":4000,"division_ms":8000},"computing_power":5,"max_agent_errors":10,"agent_periodicity":100}
- 4000,
-        "division_ms": 8000
-    },
-    "computing_power": 5,
-    "max_agent_errors": 10,
-    "agent_periodicity": 100
+{
+	"port": 3701,
+	"path": {
+		"calc": "/api/v1/calculate",
+		"get": "/api/v1/expressions",
+		"task": "/internal/task"
+	},
+	"time": {
+		"addition_ms": 1000,
+		"subtraction_ms": 2000,
+		"multiplication_ms": 4000,
+		"division_ms": 8000
+	},
+	"computing_power": 5,
+	"max_agent_errors": 10,
+	"agent_periodicity": 100
 }

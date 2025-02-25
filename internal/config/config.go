@@ -49,7 +49,6 @@ func LoadJsonConfig(filepath string) (*Config, error) {
 	if err != nil {
 		return nil, vanerrors.Wrap(ErrorOpeningConfig, err)
 	}
-
 	defer file.Close()
 
 	var cfg Config
@@ -75,15 +74,16 @@ func LoadConfigEnv(filepath string) (*Config, error) {
 }
 
 func (c *Config) Save(filepath string) error {
-	file, err := os.OpenFile(filepath, os.O_RDONLY|os.O_CREATE, 0666)
+	file, err := os.OpenFile(filepath, os.O_TRUNC|os.O_RDONLY|os.O_CREATE, 0666)
 	if err != nil {
 		return vanerrors.Wrap(ErrorOpeningConfig, err)
 	}
 
 	defer file.Close()
 
-	err = json.NewEncoder(file).Encode(*c)
-	if err != nil {
+	json := json.NewEncoder(file)
+	json.SetIndent("", "	")
+	if err := json.Encode(*c); err != nil {
 		return vanerrors.Wrap(ErrorEncodingConfig, err)
 	}
 
