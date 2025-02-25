@@ -4,7 +4,7 @@
 
 Hi! I'm Vandi, the author of this project! 
 
-You can contact me in [telegram](http://t.me/vandi37) or [write an e-mail](mailto:lev-person11@yandex.ru)
+You can contact me in [telegram](http://t.me/vandi37) or write an e-mail `lev-person11@yandex.ru`
 
 
 ### What is it? 
@@ -15,7 +15,7 @@ This project is a calculator on golang that uses concurrency.
 
 The calculator splits the expression into mini tasks and does them outside the main logic.
 
-## Installation and running.
+## Installation and running
 
 Now, when you know a bit about how it should work and what it is lets talk about installation and running the project.
 
@@ -404,7 +404,7 @@ Once more the agent receives a task, calculates it and sends back. The result go
 
 The client sends a request to the server which asks the waiter about the status of clients expression and gives the status to the client. 
 
-## Examples.
+## Examples
 
 ### Errors.
 
