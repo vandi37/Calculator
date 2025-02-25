@@ -101,17 +101,17 @@ After running frontend it will give you a link to the website where the server i
 
 ```mermaid
 graph LR
-
+	
 F(["Vue.js
 Frontend"]) <--> HTTP
 Agent(["Agent"]) <--> HTTP;
-
+	
 HTTP <----> Server("Server")
-
+	
 Server --> Orchestrator
-
+	
 Waiter[/"Waiter"\] <--> Orchestrator
-
+	
 Server("Server") <--> Waiter
 ```
 
