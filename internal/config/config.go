@@ -74,7 +74,7 @@ func LoadConfigEnv(filepath string) (*Config, error) {
 }
 
 func (c *Config) Save(filepath string) error {
-	file, err := os.OpenFile(filepath, os.O_TRUNC|os.O_RDONLY|os.O_CREATE, 0666)
+	file, err := os.OpenFile(filepath, os.O_TRUNC|os.O_WRONLY|os.O_CREATE, 0666)
 	if err != nil {
 		return vanerrors.Wrap(ErrorOpeningConfig, err)
 	}
