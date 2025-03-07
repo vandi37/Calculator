@@ -6,6 +6,7 @@ Hi! I'm Vandi, the author of this project!
 
 You can contact me in [telegram](http://t.me/vandi37) or write an e-mail `lev-person11@yandex.ru`
 
+! Please view [issue 57](https://github.com/vandi37/Calculator/issues/57#issue-2903358500] it is important
 
 ### What is it? 
 
