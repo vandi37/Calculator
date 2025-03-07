@@ -50,7 +50,7 @@ func Prod(writer zapcore.WriteSyncer) zapcore.Core {
 }
 
 func ProdFile(name string) (zapcore.Core, error) {
-	file, err := os.OpenFile(name, os.O_CREATE|os.O_APPEND, 0666)
+	file, err := os.OpenFile(name, os.O_CREATE|os.O_APPEND|os.O_RDWR, 0666)
 	if err != nil {
 		return nil, err
 	}
