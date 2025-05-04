@@ -1,0 +1,63 @@
+services:
+  mongodb:
+    image: mongo:latest
+    command: [
+      --logpath=/var/log/mongodb/mongod.log,
+      --logappend
+    ]
+    container_name: mongodb
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USERNAME:-app}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD:-12345}
+    volumes:
+      - mongodb_data:/data/db
+      - ./mongo_logs:/var/log/mongodb 
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 1s
+      timeout: 3s
+      retries: 2
+      start_period: 5s
+
+  app:
+    build:
+      context: ./calculator
+      dockerfile: Dockerfile
+    volumes:
+      - ./calculator_logs:/var/log/calculator 
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    environment:
+      PORT: ${PORT:-8080}
+      GRPC_PORT: ${GRPC_PORT:-50051}
+      TIME_ADDITION_MS: ${TIME_ADDITION_MS:-10}
+      TIME_SUBTRACTION_MS: ${TIME_SUBTRACTION_MS:-10}
+      TIME_MULTIPLICATION_MS: ${TIME_MULTIPLICATION_MS:-10}
+      TIME_DIVISION_MS: ${TIME_DIVISION_MS:-8000}
+      MONGO_URI: mongodb://${MONGO_USERNAME:-app}:${MONGO_PASSWORD:-12345}@mongodb:27017/?authSource=admin&retryWrites=true
+      RESET_TASK_DURATION: ${RESET_TASK_DURATION:-1m}
+      JWT_SECRET: ${JWT_SECRET:-secret}
+      JWT_EXP: ${JWT_EXP:-24h}
+      JWT_NBF: ${JWT_NBF:-1ms}
+      LOG_FILE: /var/log/calculator/calculator.log
+    ports:
+      - "${PORT:-8080}:${PORT:-8080}"
+
+  agent:
+    build:
+      context: ./agent
+      dockerfile: Dockerfile
+    volumes:
+      - ./agent_logs:/var/log/agent
+    depends_on:
+      - app
+    environment:
+      GRPC_PATH: app:${GRPC_PORT:-50051}
+      COMPUTING_POWER: ${COMPUTING_POWER:-10}
+      RETRY_COUNT: ${RETRY_COUNT:-5}
+      LOG_FILE: /var/log/agent/agent.log
+
+volumes:
+  mongodb_data:
