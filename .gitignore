@@ -54,3 +54,6 @@ coverage
 
 # pic 
 *.dio.*
+
+# env
+.env
