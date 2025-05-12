@@ -37,10 +37,6 @@ Please don't rate my project lower because of MongoDB. It works and saves the st
 
 ![](img/flowchart.png "Graph")
 
-Database schema
-
-![](img/schema.png "Schema")
-
 ## How to launch the project
 
 Clone the project
