@@ -4,7 +4,7 @@
 
 Hi! I'm Vandi, the author of this project! 
 
-You can contact me in [telegram](http://t.me/vandi37) or write an e-mail `lev-person11@yandex.ru`
+You can contact me in [telegram](http://t.me/aBarrelOfLiter) or write an e-mail `lev-person11@yandex.ru`
 
 ## Components
 
@@ -252,3 +252,4 @@ cd ../..
 
     > Yes! It is because My as tree node can be a binary expression or a number, so 5 it is just a tree with one node.
  
+
